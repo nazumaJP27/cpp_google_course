@@ -15,4 +15,6 @@ int main()
             cout << setw(17) << left << "Hello, world!";
         cout << '\n';
     }
+
+    return 0;
 }
