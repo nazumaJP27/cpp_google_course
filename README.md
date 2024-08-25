@@ -3,11 +3,11 @@
 This repository contains the **Learn by Examples**, **Exercises**, and **Projects** code for the **C++ Education** course.
 
 ### Course:
-  - **Google for Developers: C++ Education**
+  - **Google for Developers - C++ Education**
 
 ### Contents:
-  - Getting Started:
-    - Learn by Example #1
+  - **Getting Started**:
+    - Learn by Example's: #1, #2, and #4.
     - Exercises
     - Projects
 
