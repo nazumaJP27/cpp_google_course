@@ -7,7 +7,6 @@ Your boss has given you three options for compensation, which you must choose be
 
 Write a program to help decide the best choice of compensation (based on weekly sales). */
 
-#include <ctype.h>  // isdigit
 #include <iomanip>  // std::setprecision
 #include <iostream>
 #include <limits>   // std::numeric_limits
