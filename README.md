@@ -7,7 +7,7 @@ This repository contains the **Learn by Examples**, **Exercises**, and **Project
 
 ### Contents:
   - **Getting Started**:
-    - Learn by Example's: #1, #2, #4, and #5.
+    - Learn by Example's: #1, #2, #4, #5, and #7.
     - Exercises
     - Projects
 

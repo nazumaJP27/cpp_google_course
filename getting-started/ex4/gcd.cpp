@@ -6,7 +6,7 @@ Try doing the function without recursion first */
 
 #include <ctype.h>  // isdigit
 #include <iostream>
-#include <string>   // std::atoi
+#include <string>   // std::stoi
 
 // Prototypes
 int euclidean_alg(int x, int y);
