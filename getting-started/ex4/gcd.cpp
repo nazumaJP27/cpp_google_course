@@ -35,7 +35,9 @@ bool str_isdigit(char *str)
 {
     for (char* p = str; *p; p++)
     {
-        if (!isdigit(*p))
+        if (*p == '-')
+            continue; // Skip the minus sign character
+        else if (!isdigit(*p))
             return false;
     }
     return true;
