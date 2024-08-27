@@ -9,6 +9,6 @@ This repository contains the **Learn by Examples**, **Exercises**, and **Project
   - **Getting Started**:
     - **Learn by Example's:** #1, #2, #4, #5, #7, and #9.
       - *Note: #3, #6, and #8 were code output interpretation examples.*
-    - **Exercises and Projects:**
+    - **Exercises and Projects:** #1, and #2.
 
 ##### *Aug 2024 - Present*
