@@ -29,7 +29,7 @@ int main()
     std::cout << "\nEnter a three-digit number whose first digit is greater than the third." << std::endl;
     int number = 0;
 
-    // Prompt for number in a loop while the first digit < last digit
+    // Prompt for number in a loop while the first digit <= last digit
     do
     {
         number = get_three_digit_number();
@@ -49,7 +49,7 @@ int main()
     number -= reversed;
     std::cout << number << std::endl;
 
-    // Reverse number again and print reversed + number to the console
+    // Reverse number again
     reversed = flip_int(number);
     std::cout << "reverse it: " << reversed << std::endl;
 
