@@ -34,7 +34,6 @@ struct Sums {
     int XplusY;
     int YplusZ;
     int ZplusX;
-    int a = 9;
 };
 
 // Prototypes
@@ -153,7 +152,6 @@ void check_sums(Sums &sums)
     adjust_sum(sums.XplusY);
     adjust_sum(sums.YplusZ);
     adjust_sum(sums.ZplusX);
-    adjust_sum(sums.a);
 }
 
 // Divide all the sums in half (step #5)
