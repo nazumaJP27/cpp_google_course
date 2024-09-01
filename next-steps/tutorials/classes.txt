@@ -1,0 +1,245 @@
+1. DECLARING A CLASS
+
+To write the code for our object, all we need to do is declare the member data and member functions,
+and wrap them up inside an object declaration. Here's how it's done:
+------------------------------------------------------------------------
+class Player
+{
+    int health;
+    int strength;
+    int agility;
+
+    void move();
+    void attack_monster();
+    void get_treasure();
+
+    // Member function definition:
+    void Player::move()
+    {
+        // Function body goes here
+    }
+
+    void Player::get_treasure()
+    {
+        health++; // increments the value of the player's health by one
+    }
+};
+------------------------------------------------------------------------
+
+The difference between member functions and stand-alone functions
+is that we precede the name of the function, in this case move(),
+with the name of the object, Player, and two colons.
+This tells the compiler that this function is part of the Player class.
+
+2. USING A CLASS
+
+Let's say you want to have four players in your game,
+each trying to find their way to the end of a maze faster than the others.
+You might start by creating four instances of your Player object, like this:
+------------------------------------------------------------------------
+Player blue_hat;
+Player red_hat;
+Player green_hat;
+Player yellow_hat;
+------------------------------------------------------------------------
+
+Although these objects are all Players, they are completely independent of one another.
+They were created from the same template, but they can have different attributes.
+For example, "blueHat" might be a slow, strong player, while "greenHat" might be quick and weak,
+and "yellowHat" might be a well balanced individual, etc.
+The thing that makes these objects similar is that they all must have values for strength, health, and agility, but nothing else.
+They can all move, attack monsters, and get treasures, but that is all they can do.
+So -- they are similar in the kinds of things they can do and the attributes they must have,
+but they are different in that they can each have their own values for those attributes.
+
+Suppose someone is playing your adventure game, and they are controlling the player with the green hat.
+When the person hits the key to attack a monster, you need to make sure that the correct code gets executed
+so that the right player attacks the monster. The code would look like this:
+------------------------------------------------------------------------
+green_hat.attackMonster();
+------------------------------------------------------------------------
+
+Now let's suppose that greenHat picks up a treasure. Somewhere in your program, the following will get executed:
+------------------------------------------------------------------------
+green_hat.get_treasure();
+------------------------------------------------------------------------
+
+3. CONTRUCTORS AND DESTRUCTORS
+
+In addition to all of the member functions you'll create for your objects,
+there are two special kinds of functions that you should create for every object. They are called constructors and destructors.
+Constructors are called every time you create an object, and destructors are called every time you destroy an object.
+
+Constructors
+
+The constructor's job is to set up the object so that it can be used.
+The way object initialization happens in C++ is that a special function, the constructor, is called when you instantiate an object.
+The constructor is a function whose name is the same as the object, with no return type (not even void).
+For our video game, we'll probably want to initialize our Players' attributes so that they don't contain garbage values.
+We might decide to write the constructor like this:
+------------------------------------------------------------------------
+Player::Player() 
+{
+    strength = 10;
+    agility = 10;
+    health = 10;
+}
+------------------------------------------------------------------------
+
+We would also have to change the class declaration so that it looks like this:
+------------------------------------------------------------------------
+class Player {
+    int health;
+    int strength;
+    int agility;
+
+    Player();  // constructor - no return type
+    void move();
+    void attack_monster();
+    void get_treasure();
+};
+------------------------------------------------------------------------
+
+One problem with this constructor is that all of the players will be initialized to havestrength=10, agility=10, and health=10.
+We might want to create players with different values for strength and agility to make our game more interesting.
+So, we can add a second constructor, which has parameters for strength and agility.
+Our class declaration would now look like this:
+------------------------------------------------------------------------
+class Player
+{
+    int health;
+    int strength;
+    int agility;
+
+    Player();             // constructor - no return type
+    Player(int s, int a); // alternate constructor takes two parameters
+    void move();
+    void attack_monster();
+    void get_treasure();
+};
+------------------------------------------------------------------------
+and we would add a function definition for the alternate constructor, which looks like this:
+------------------------------------------------------------------------
+Player::Player(int s, int a)
+{
+    strength = s;
+    agility = a;
+    health = 10;
+}
+------------------------------------------------------------------------
+
+Now, when we want to instantiate the Player object four times, we can do the following:
+Player redHat;              // default constructor
+Player blueHat(14, 7);      // alternate constructor
+Player greenHat(6, 12);     // alternate constructor
+Player yellowHat(10, 10);   // alternate constructor
+
+Destructors
+
+Destructors are less complicated than constructors.
+You don't call them explicitly (they are called automatically for you), and there's only one destructor for each object.
+The name of the destructor is the name of the class, preceeded by a tilde (~). Here's an example of a destructor:
+------------------------------------------------------------------------
+Player::~Player()
+{
+    strength = 0;
+    agility = 0;
+    health = 0;
+}
+------------------------------------------------------------------------
+
+Since a destructor is called after an object is used for the last time, you're probably wondering why they exist at all.
+Right now, they aren't very useful, but you'll see why they're important in a future section.
+
+// 4. PROTECT YOUR PRIVATE PARTS
+
+Every data member and member function in a class is either private, public, or protected.
+Private:
+    Specifying that a data member or member function is private means that it can only be accessed from within the class.
+    For data members, this means that the data can be accessed or modified only while inside a member function of the class.
+    For member functions, this means that the function can be called only while inside another member function of the class.
+    This is the default, if no specifiers are used.
+Public:
+    Specifying that a data member or member function is public means that it can be accessed from anywhere in your code.
+    The public specifier is less restrictive than private.
+Protected:
+    Protected data member or member functions can only be accessed from within the class or a subclass.
+    The protected specifier is less restrictive than private but more restrictive than public. 
+
+The specifier affects all data members and member functions until the next occurrence of a specifier.
+Here's the Player class, with protection specifiers added:
+------------------------------------------------------------------------
+class Player
+{
+private:
+    int health;
+    int strength;
+    int agility;
+public:
+    void move();
+    void attack_monster();
+    void get_treasure();
+};
+------------------------------------------------------------------------
+
+In this example, the private keyword begins a private section encompassing the three data members.
+The public keyword specifies that the next three member functions should be public.
+So, only code which is in a Player member function can access the data members,
+while any code in the program is free to call the member functions in the Player class. 
+
+- Why bother with specifiers?
+    Specifiers allow a class to be very complex, with many member functions and data members,
+while having a simple public interface that other classes can use.
+A class which has two hundred data members and one hundred member functions can be very complicated to write;
+but if there are only three or four public member functions,
+and the rest are all private, it can be easy for someone to learn how to use the class.
+He only needs to understand how to use a small handful of public functions,
+and doesn't need to bother with the two hundred data members, because he's not allowed to access this data.
+He can only access the private data through the class' public interface.
+This all shows how specifiers are especially useful in a large program involving more than one programmer.
+
+- Best practices:
+    In general, it is good practice to make data members private.
+Member functions which must be called from outside the class should be public,
+and member functions which are only called from within the class (also known as "helper functions") should probably be private.
+
+5. INLINE FUNCTIONS
+
+There's another way to define your member functions. You can define them "inline", inside the class declaration.
+Here's how you would define get_treasure inline:
+------------------------------------------------------------------------
+class Player {
+private:
+    int health;
+    int strength;
+    int agility;
+public:
+  void move();
+  void attack_monster();
+  void get_treasure() { health++; } // this is the function definition
+};
+------------------------------------------------------------------------
+
+The braces following get_treasure() contain the entire code for the function.
+We don't have to define the function later in our code using the Player::get_treasure() syntax; 
+in fact, the compiler won't allow it, because it's already been defined here inside the class declaration. 
+
+- Why inline?
+As you probably noticed, it's definitely fewer keystrokes to inline a function.
+However, another good reason to inline is that you can sometimes speed up your program by inlining the right function.
+Instead of calling the function every time it is invoked,
+the compiler will replace the function call with a copy of the function body.
+If it's a small function which gets called a lot, this can sometimes speed things up. 
+
+- Why not inline everything?
+Since the compiler will copy the entire function body every time the function is called,
+if it is a large function (more than three or four lines),
+inlining can increase the size of your executable program significantly.
+You may want to try to see what kind of speed gains you can achieve by inlining,
+and also compare the increase in the size of your executable.
+
+- Best practices:
+Just as it is sometimes easier to read functions if they are inlined, it is sometimes harder to read inlined functions.
+If a function is more than one or two lines,
+inlining it will more than likely distract a reader who is trying to understand how the class works.
+In these cases, it's probably better not to inline.
