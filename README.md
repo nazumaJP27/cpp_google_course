@@ -12,6 +12,6 @@ This repository contains the **Learn by Example's**, **Exercises**, and **Projec
     - **Exercises and Projects #1:** ex1, ex2, ex3, ex4, ex5, ex6 and ex7.
 
   - **Next Steps**:
-    - **Learn by Example #2:**
+    - **Learn by Example #2:** ex1.
 
 ##### *Aug 2024 - Present*
