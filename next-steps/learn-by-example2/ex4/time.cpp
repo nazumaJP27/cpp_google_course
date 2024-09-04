@@ -65,6 +65,7 @@ void Clock::decrement()
             }
         }
     }
+    return;
 }
 
 void Clock::display()
