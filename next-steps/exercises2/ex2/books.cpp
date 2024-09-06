@@ -1,4 +1,4 @@
-/* Exercise 2: Book store. [work in progress]
+/* Exercise 2: Book store.
 Your college book store needs your help in estimating its business for next year.
 Experience has shown that sales depend greatly on whether a book is required for a course or just optional,
 and whether or not it has been used in the class before.
