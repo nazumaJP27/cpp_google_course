@@ -11,7 +11,10 @@ Composer::Composer() : first_name_(""), last_name_(""), yob_(0), genre_(""), fac
 // Display info of the composer into console
 void Composer::display()
 {
-    std::cout << get_first_name() << " " << get_last_name() << std::endl;
+    std::cout << get_first_name() << " " << get_last_name()
+              << "\nBirth: " << get_yob()
+              << "\nGenre: " << get_genre()
+              << "\nFact: " << get_fact() << std::endl;
 }
 
 // Check bounds and set ranking
