@@ -18,7 +18,7 @@ void Composer::display()
 }
 
 // Check bounds and set ranking
-void Composer::set_ranking(int in_ranking)
+void Composer::set_ranking(unsigned int in_ranking)
 {
     if (in_ranking >= DEFAULT_RANK && in_ranking <= MAX_RANK)
         ranking_ = in_ranking;

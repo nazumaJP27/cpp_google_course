@@ -38,13 +38,13 @@ public:
     void set_fact(const std::string &in_fact) { fact_ = in_fact; }
     const std::string &get_fact() const { return fact_; }
 
-    void set_ranking(int in_ranking);
+    void set_ranking(unsigned int in_ranking);
     unsigned int get_ranking() const { return ranking_; }
 
     // Methods
     void display();
     void promote(unsigned int increment=1) { ranking_ = std::min(MAX_RANK, ranking_ + increment); }
-    void demote(int decrement=1) { ranking_ = std::max(DEFAULT_RANK, ranking_ - decrement); }
+    void demote(unsigned int decrement=1) { ranking_ = std::max(DEFAULT_RANK, ranking_ - decrement); }
 };
 
 
