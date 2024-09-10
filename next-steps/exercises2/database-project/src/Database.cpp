@@ -36,13 +36,17 @@ Composer* Database::get_composer(const std::string &in_last_name)
 
 void Database::display_all()
 {
-    std::cout << "Rank\tName\t\t\tBorn\tGenre\t\tFact\n\n";
+    // Display table header
+    composer_table();
+
     for (int i = 0; i < next_slot_; ++i)
     {
-        std::cout << composers_[i].get_ranking() << '\t'
-                  << composers_[i].get_first_name() << ' ' << composers_[i].get_last_name()
-                  << "\t\t" << composers_[i].get_yob() << '\t' << composers_[i].get_genre()
-                  << "\t\t" << composers_[i].get_fact() << '\n';
+        std::cout << std::left // Left alignment
+                  << std::setw(rankw_) << composers_[i].get_ranking()
+                  << std::setw(namew_) << composers_[i].get_first_name() + " " + composers_[i].get_last_name()
+                  << std::setw(yobw_) << composers_[i].get_yob()
+                  << std::setw(genrew_) << composers_[i].get_genre()
+                  << composers_[i].get_fact() << '\n';
     }
     std::cout << std::endl;
 }
@@ -58,14 +62,28 @@ void Database::display_by_rank()
     std::sort(sorted_composers.begin(), sorted_composers.end(), [](const Composer *x, const Composer *y)
               { return x->get_ranking() > y->get_ranking(); });
 
+    // Display table header
+    composer_table();
+
     // Display composers from vector
-    std::cout << "Rank\tName\t\t\tBorn\tGenre\t\tFact\n\n";
     for (const Composer *composer : sorted_composers)
     {
-        std::cout << composer->get_ranking() << '\t'
-                  << composer->get_first_name() << ' ' << composer->get_last_name()
-                  << "\t\t" << composer->get_yob() << '\t' << composer->get_genre()
-                  << "\t\t" << composer->get_fact() << '\n';
+        std::cout << std::left // Left alignment
+                  << std::setw(rankw_) << composer->get_ranking()
+                  << std::setw(namew_) << composer->get_first_name() + " " + composer->get_last_name()
+                  << std::setw(yobw_) << composer->get_yob()
+                  << std::setw(genrew_) << composer->get_genre()
+                  << composer->get_fact() << '\n';
     }
     std::cout << std::endl;
+}
+
+void Database::composer_table()
+{
+    std::cout << std::left
+              << std::setw(rankw_) << "Rank"
+              << std::setw(namew_) << "Name"
+              << std::setw(yobw_) << "Birth"
+              << std::setw(genrew_) << "Genre"
+              << "Fact\n";
 }
