@@ -1,5 +1,8 @@
 #pragma once
 
+#include "OperatorPanel.h"
+#include "CardReader.h"
+#include <iostream>
 #include <string>
 
 enum ATM_State
@@ -9,12 +12,17 @@ enum ATM_State
 
 class ATM
 {
+    // Member variables
     ATM_State state_;
     int id_;
     std::string place_;
     std::string bank_;
     std::string bank_address_; // Probably will be a path to a CSV
-    //OperatorPanel operator_panel_;
+    double initial_cash_;
+
+    // Member objects
+    OperatorPanel operator_panel_;
+    CardReader card_reader_;
 
 public:
     // Constructor
@@ -28,11 +36,12 @@ public:
     void turn_off();
 
     // Assesors
-    ATM_State get_state_() { return state_; };
-    int get_id() { return id_; }    
-    std::string get_place() { return place_; }
-    std::string get_bank() { return bank_; }
-    std::string get_bank_address() { return bank_address_; }
+    ATM_State get_state_() const { return state_; };
+    int get_id() const { return id_; }
+    std::string get_place() const { return place_; }
+    std::string get_bank() const { return bank_; }
+    std::string get_bank_address() const { return bank_address_; }
+    double get_initial_cash() const { return initial_cash_; }
 
 private:
     void perform_startup();

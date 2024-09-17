@@ -26,7 +26,7 @@ This repository contains the **Learn by Example's**, **Exercises**, and **Projec
     - **Learn by Example #2:** ex2, ex3, and *ATM Project*.
       - ex1 resource: http://web.archive.org/web/20130318122320/http://newdata.box.sk/bx/c/htm/ch08.htm#Heading1
       - ex2 resource: https://pages.cs.wisc.edu/~hasti/cs368/CppTutorial/NOTES/CLASSES-INTRO.html
-      - ATM Project resource: https://www.math-cs.gordon.edu/courses/cs211/ATMExample/
+      - *ATM Project* resource: https://www.math-cs.gordon.edu/courses/cs211/ATMExample/
       - *Note: ex1 was a code output interpretation exercise.*
     - **Unit Tests:** http://www.cs.nmsu.edu/~jeffery/courses/371/cppunit/cppunit_cookbook.html
     - **Project:** *Inverted Index*
