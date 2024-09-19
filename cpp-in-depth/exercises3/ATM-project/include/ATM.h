@@ -19,8 +19,10 @@ class ATM
     std::string bank_;
     std::string bank_address_; // Probably will be a path to a CSV
     double initial_cash_;
+    bool card_inserted_;
 
     // Member objects
+public:
     OperatorPanel operator_panel_;
     CardReader card_reader_;
 
@@ -31,17 +33,19 @@ public:
     // Methods
     void run();
 
-    // Methods (for the operator) 
+    // Methods 
     void turn_on();
     void turn_off();
+    void card_inserted();
 
     // Assesors
-    ATM_State get_state_() const { return state_; };
+    ATM_State get_state() const { return state_; };
     int get_id() const { return id_; }
     std::string get_place() const { return place_; }
     std::string get_bank() const { return bank_; }
     std::string get_bank_address() const { return bank_address_; }
     double get_initial_cash() const { return initial_cash_; }
+    bool get_card_inserted() const { return card_inserted_; }
 
 private:
     void perform_startup();

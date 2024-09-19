@@ -2,7 +2,7 @@
 
 // Constructor
 ATM::ATM(int id, const std::string place, const std::string bank)
-    : id_(id), place_(place), bank_(bank), state_(OFF), operator_panel_(this), card_reader_(this) {}
+    : id_(id), place_(place), bank_(bank), state_(OFF), card_inserted_(false), operator_panel_(this), card_reader_(this) {}
 
 // Only used by the operator
 void ATM::turn_on()
@@ -23,6 +23,11 @@ void ATM::turn_off()
     }
 }
 
+void ATM::card_inserted()
+{
+    card_inserted_ = true;
+}
+
 void ATM::perform_startup()
 {
     // Asks operator to enter the amount of money currently in the cash dispenser
@@ -34,5 +39,4 @@ void ATM::perform_shutdown()
     // The connection with the "bank" is closed
     // Close CSVs
     std::cout << "The operator is now free to remove deposited envelopes, replenish cash and paper, etc...\n";
-
 }
