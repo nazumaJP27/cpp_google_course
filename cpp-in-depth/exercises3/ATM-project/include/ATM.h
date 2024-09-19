@@ -2,6 +2,8 @@
 
 #include "OperatorPanel.h"
 #include "CardReader.h"
+#include "CashDispenser.h"
+#include "Money.h"
 #include <iostream>
 #include <string>
 
@@ -16,15 +18,17 @@ class ATM
     ATM_State state_;
     int id_;
     std::string place_;
-    std::string bank_;
+    std::string bank_name;
     std::string bank_address_; // Probably will be a path to a CSV
-    double initial_cash_;
     bool card_inserted_;
+public: // Testing
+    Money initial_cash_;
 
     // Member objects
 public:
     OperatorPanel operator_panel_;
     CardReader card_reader_;
+    CashDispenser cash_dispenser_;
 
 public:
     // Constructor
@@ -42,9 +46,8 @@ public:
     ATM_State get_state() const { return state_; };
     int get_id() const { return id_; }
     std::string get_place() const { return place_; }
-    std::string get_bank() const { return bank_; }
+    std::string get_bank_name() const { return bank_name; }
     std::string get_bank_address() const { return bank_address_; }
-    double get_initial_cash() const { return initial_cash_; }
     bool get_card_inserted() const { return card_inserted_; }
 
 private:

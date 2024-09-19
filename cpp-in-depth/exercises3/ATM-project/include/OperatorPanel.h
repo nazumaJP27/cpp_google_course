@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Money.h"
 #include <iostream>
 #include <limits>
 
@@ -14,5 +15,5 @@ public:
     OperatorPanel(const ATM *const atm);
 
     // Method
-    double get_initial_cash();
+    Money get_initial_cash();
 };

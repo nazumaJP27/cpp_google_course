@@ -21,5 +21,9 @@ int CardReader::get_card_number()
     {
         return card_->get_card_number();
     }
+    else
+    {
+        std::cout << "No card inserted\n";
+    }
     return 0;
 }
