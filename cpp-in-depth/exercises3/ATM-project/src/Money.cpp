@@ -23,8 +23,9 @@ void Money::subtract(const Money *const amount)
 {
     // Check for nullptr
     if (amount)
-        if (greater_equal(amount))
+    {    if (greater_equal(amount))
             cents_ -= amount->cents_;
+    }
     else
         std::cout << "Not enough money to subtract.\n";
 }

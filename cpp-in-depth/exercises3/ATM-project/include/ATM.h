@@ -32,7 +32,7 @@ public:
 
 public:
     // Constructor
-    ATM(int id, std::string place, std::string bank);
+    ATM(int id, const std::string place, const std::string bank_name);
 
     // Methods
     void run();

@@ -1,9 +1,9 @@
 #include "../include/ATM.h"
 
 // Constructor
-ATM::ATM(int id, const std::string place, const std::string bank)
-    : id_(id), place_(place), bank_name(bank), state_(OFF), card_inserted_(false), operator_panel_(this), card_reader_(this),
-      initial_cash_(0) {}
+ATM::ATM(int id, const std::string place, const std::string bank_name)
+    : state_(OFF), id_(id), place_(place), bank_name(bank_name), card_inserted_(false), initial_cash_(0), 
+      operator_panel_(this), card_reader_(this) {}
 
 // Only used by the operator
 void ATM::turn_on()
