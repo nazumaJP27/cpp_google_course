@@ -5,7 +5,7 @@ Money::Money(int dollars) : cents_(dollars * 100) {}
 Money::Money(int dollars, int cents) : cents_((dollars * 100) + cents) {}
 
 // Methods
-std::string Money::to_string()
+std::string Money::to_string() const
 {
     std::ostringstream out;
     out << "$" << cents_ / 100 << '.' << std::setw(2) << std::setfill('0') << cents_ % 100;
@@ -30,7 +30,7 @@ void Money::subtract(const Money *const amount)
         std::cout << "Not enough money to subtract.\n";
 }
 
-bool Money::greater_equal(const Money *const compare_to)
+bool Money::greater_equal(const Money *const compare_to) const
 {
     return cents_ >= compare_to->cents_;
 }

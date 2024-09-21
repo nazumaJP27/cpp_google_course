@@ -15,7 +15,13 @@ bool CardReader::read_card(const Card *const card)
     return false;
 }
 
-int CardReader::get_card_number()
+void CardReader::eject_card()
+{
+    std::cout << "Card " << card_->get_card_number() << " ejected...\n";
+    card_ = nullptr;
+}
+
+std::string CardReader::get_card_number() const
 {
     if (card_)
     {

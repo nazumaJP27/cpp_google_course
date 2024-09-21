@@ -1,12 +1,16 @@
 #pragma once
 
+#include <string>
+
 class Card
 {
-    int number_;
+    const std::string number_;
+    const std::string flag_;
 
 public:
     // Constructor
-    Card(int number) : number_(number) {}
+    Card(std::string number, std::string flag) : number_(number), flag_(flag){}
 
-    int get_card_number() const { return number_; }
+    std::string get_card_number() const { return number_; }
+    std::string get_card_flag() const { return flag_; }
 };

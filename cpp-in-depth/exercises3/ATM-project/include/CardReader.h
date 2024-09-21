@@ -18,5 +18,5 @@ public:
     bool read_card(const Card *const card);
     void retain_card();   // Not implemented
     void eject_card();    // Not implemented
-    int get_card_number();
+    std::string get_card_number() const;
 };

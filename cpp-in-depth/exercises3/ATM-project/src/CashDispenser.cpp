@@ -8,9 +8,10 @@ void CashDispenser::set_initial_cash(const Money *const initial_cash)
     cash_on_hand_.add(initial_cash);
     std::cout << "Initial cash: ";
     print_cash_on_hand();
+    std::cout << '\n';
 }
 
-bool CashDispenser::check_cash_on_hand(const Money *const amount)
+bool CashDispenser::check_cash_on_hand(const Money *const amount) const
 {
     if (cash_on_hand_.greater_equal(amount))
         return true;
