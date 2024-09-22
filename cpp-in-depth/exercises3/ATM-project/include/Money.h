@@ -8,7 +8,7 @@
 
 class Money
 {
-    unsigned long cents_;
+    unsigned long long cents_;
 
 public:
     // Constructors

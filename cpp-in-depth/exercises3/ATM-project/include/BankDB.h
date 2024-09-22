@@ -17,5 +17,9 @@ public:
 
     // Methods
     Account* get_account(const std::string &card_number);
-    void update_account(const Account *account);
+    void update_DB(const std::string &bank_address);
+
+    // Accessors
+    bool get_bank_network() { return bank_network_; }
+    unsigned int get_accounts_num() { return accounts_.size(); }
 };

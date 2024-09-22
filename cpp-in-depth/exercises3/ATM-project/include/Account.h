@@ -13,13 +13,14 @@ class Account
 
 public:
     // Constructor
-    Account(std::string card_number, std::string card_flag, std::string name, double balance);
+    Account(std::string card_number, std::string card_flag, std::string name, int dollars, short cent);
 
     // Accessors
     std::string get_card_number() const { return card_.get_card_number(); }
     std::string get_card_flag() const { return card_.get_card_flag(); }
     std::string get_name() const { return name_; }
     const Money* get_balance() const { return &balance_; }
+    Money* get_balance_() { return &balance_; }
 
     // Methods
     void display() const;

@@ -17,22 +17,30 @@ BankDB::BankDB(const std::string &bank_address)
         std::cout << "File " << bank_address << " openned...\n";
         
         std::string line, card_number, card_flag, name, balance_str;
-        double balance;
+        long double balance;
+        int dollars, cents;
         while (std::getline(file, line))
         {
-            std::istringstream line_stream(line);
+            balance = 0;
+            if (!(std::isspace(line[0])))
+            {
+                std::istringstream line_stream(line);
 
-            // Parse the istringstream object (format: cardnumber, card flag, name, balance)
-            std::getline(line_stream, card_number, ',');
-            std::getline(line_stream, card_flag, ',');
-            std::getline(line_stream, name, ',');
-            std::getline(line_stream, balance_str, ',');
+                // Parse the istringstream object (format: cardnumber, card flag, name, balance)
+                std::getline(line_stream, card_number, ',');
+                std::getline(line_stream, card_flag, ',');
+                std::getline(line_stream, name, ',');
+                std::getline(line_stream, balance_str, ',');
 
-            // Convert balance to double
-            balance = std::stod(balance_str);
+                // Convert balance to double
+                balance = std::stod(balance_str);
+                dollars = balance; // Truncate balance
+                cents = balance * 100; // Total cents
+                cents %= 100; // Cents minus total dollars
 
-            // Create an Account object and add it to the vector
-            accounts_.emplace_back(card_number, card_flag, name, balance);
+                // Create an Account object and add it to the vector
+                accounts_.emplace_back(card_number, card_flag, name, dollars, cents);
+            }
         }
     }
     file.close();
@@ -50,7 +58,17 @@ Account* BankDB::get_account(const std::string &card_number)
     return nullptr;
 }
 
-void BankDB::update_account(const Account *account)
+// Will update the balance of the accounts in the CSV file
+void BankDB::update_DB(const std::string &bank_address)
 {
-    // Will update the balance of an account in the CSV file after a operation on the given Account object
+    std::ofstream file(bank_address);
+    for (const Account &account : accounts_)
+    {
+        file << account.get_card_number() << ','
+             << account.get_card_flag() << ','
+             << account.get_name() << ','
+             << account.get_balance()->to_string() << '\n';
+    }
+    std::cout << "Bank Database updated...\n";
+    file.close();
 }
