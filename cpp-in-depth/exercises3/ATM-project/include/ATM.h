@@ -5,6 +5,7 @@
 #include "CashDispenser.h"
 #include "Money.h"
 #include "Account.h"
+#include "BankDB.h"
 #include <iostream>
 #include <string>
 
@@ -32,6 +33,7 @@ public:
     OperatorPanel operator_panel_;
     CardReader card_reader_;
     CashDispenser cash_dispenser_;
+    BankDB bank_DB_;
 
 public:
     // Constructor

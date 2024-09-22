@@ -3,7 +3,7 @@
 // Constructor
 ATM::ATM(int id, const std::string place, const std::string bank_name, const std::string bank_address)
     : state_(OFF), id_(id), place_(place), bank_name(bank_name), bank_address_(bank_address), card_inserted_(false), initial_cash_(0), 
-      operator_panel_(this), card_reader_(this) {}
+      operator_panel_(this), card_reader_(this), bank_DB_(bank_address_) {}
 
 // Only used by the operator
 void ATM::turn_on()
