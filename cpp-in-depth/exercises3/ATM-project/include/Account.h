@@ -20,7 +20,7 @@ public:
     std::string get_card_flag() const { return card_.get_card_flag(); }
     std::string get_name() const { return name_; }
     const Money* get_balance() const { return &balance_; }
-    Money* get_balance_() { return &balance_; }
+    Money* get_balance_() { return &balance_; } // For operations (will be private)
 
     // Methods
     void display() const;
