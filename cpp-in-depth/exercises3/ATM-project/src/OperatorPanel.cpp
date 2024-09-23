@@ -4,10 +4,10 @@ OperatorPanel::OperatorPanel(const ATM *const atm) : atm_(atm) {}
 
 Money OperatorPanel::get_initial_cash()
 {
-    double cash;
+    long double cash;
     do
     {
-        std::cout << "Amount of money currently in the cash dispenser: $";
+        std::cout << "Amount of money currently in the cash dispenser (only digits): ";
         if (!(std::cin >> cash))
         {
             std::cin.clear();
@@ -16,6 +16,6 @@ Money OperatorPanel::get_initial_cash()
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } while (cash < 1);
 
-    // Return a Money object (constructor @param[0] dollars, @param[1] cents)
-    return Money((int) cash, (int) (cash * 100) % 100);
+    // Return a Money object (constructor total cents)
+    return Money(true, cash * 100);
 }

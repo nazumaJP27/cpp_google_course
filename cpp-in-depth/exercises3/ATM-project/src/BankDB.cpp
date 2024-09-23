@@ -17,8 +17,7 @@ BankDB::BankDB(const std::string &bank_address)
         std::cout << "File " << bank_address << " openned...\n";
         
         std::string line, card_number, card_flag, name, balance_str;
-        long double balance;
-        int dollars, cents;
+        unsigned long long balance;
         while (std::getline(file, line))
         {
             balance = 0;
@@ -26,20 +25,17 @@ BankDB::BankDB(const std::string &bank_address)
             {
                 std::istringstream line_stream(line);
 
-                // Parse the istringstream object (format: cardnumber, card flag, name, balance)
+                // Parse the istringstream object (format: cardnumber, card flag, name, balance [in cents])
                 std::getline(line_stream, card_number, ',');
                 std::getline(line_stream, card_flag, ',');
                 std::getline(line_stream, name, ',');
                 std::getline(line_stream, balance_str, ',');
 
-                // Convert balance to double
-                balance = std::stod(balance_str);
-                dollars = balance; // Truncate balance
-                cents = balance * 100; // Total cents
-                cents %= 100; // Cents minus total dollars
+                // Convert balance to unsigned long long (total cents)
+                balance = std::stoull(balance_str);
 
                 // Create an Account object and add it to the vector
-                accounts_.emplace_back(card_number, card_flag, name, dollars, cents);
+                accounts_.emplace_back(card_number, card_flag, name, Money(true, balance));
             }
         }
     }
@@ -67,7 +63,7 @@ void BankDB::update_DB(const std::string &bank_address)
         file << account.get_card_number() << ','
              << account.get_card_flag() << ','
              << account.get_name() << ','
-             << account.get_balance()->to_string() << '\n';
+             << account.get_balance()->to_string(true) << '\n'; // sign=false
     }
     std::cout << "Bank Database updated...\n";
     file.close();

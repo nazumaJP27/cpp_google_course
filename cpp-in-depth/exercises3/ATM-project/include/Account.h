@@ -13,7 +13,7 @@ class Account
 
 public:
     // Constructor
-    Account(std::string card_number, std::string card_flag, std::string name, int dollars, short cent);
+    Account(std::string card_number, std::string card_flag, std::string name, Money balance);
 
     // Accessors
     std::string get_card_number() const { return card_.get_card_number(); }
