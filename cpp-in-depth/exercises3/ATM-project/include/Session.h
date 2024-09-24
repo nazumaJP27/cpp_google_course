@@ -16,14 +16,15 @@ class Session
 {
     TransactionType current_transaction_;
     Account *active_account_;
-    Money transaction_amount_;
+    Account *transfer_target_;
+    Money* transaction_amount_;
 
 public:
     // Constructor
     Session();
 
     // Methods
-    void start_transaction(TransactionType transaction, Account *account);
+    bool start_transaction(TransactionType transaction, Money *transaction_money, Account *account, Account *transfer_target=nullptr);
     void process_transaction();
     void reset_session();
     void display();

@@ -7,6 +7,7 @@
 #include "Account.h"
 #include "BankDB.h"
 #include "Session.h"
+#include "CustomerConsole.h"
 
 #include <iostream>
 #include <string>
@@ -37,6 +38,7 @@ public:
     CashDispenser cash_dispenser_;
     BankDB bank_DB_;
     Session session_;
+    CustomerConsole customer_console_;
 
 public:
     // Constructor

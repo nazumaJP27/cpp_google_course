@@ -20,5 +20,5 @@ public:
     void add(const Money *const amount);
     void subtract(const Money *const amount);
     bool greater_equal(const Money *const compare_to) const;
-    double get_money() const { return cents_ * 100; }
+    long double get_dollars() const { return cents_ / 100; }
 };

@@ -44,7 +44,8 @@ BankDB::BankDB(const std::string &bank_address)
 
 Account* BankDB::get_account(const std::string &card_number)
 {
-    for (int i = 0; i < accounts_.size(); ++i)
+    int size = accounts_.size();
+    for (int i = 0; i < size; ++i)
     {
         if (accounts_[i].get_card_number() == card_number)
             return &accounts_[i];

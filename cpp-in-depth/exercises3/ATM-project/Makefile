@@ -16,12 +16,12 @@ TARGET = $(BIN_DIR)/test-atm.exe
 # Source files
 SRCS = $(SRC_DIR)/ATM.cpp $(SRC_DIR)/CardReader.cpp $(SRC_DIR)/CashDispenser.cpp $(SRC_DIR)/Money.cpp \
        $(SRC_DIR)/OperatorPanel.cpp $(SRC_DIR)/Account.cpp $(SRC_DIR)/BankDB.cpp $(SRC_DIR)/test-ATM.cpp \
-       $(SRC_DIR)/Session.cpp
+       $(SRC_DIR)/Session.cpp $(SRC_DIR)/CustomerConsole.cpp
 
 # Object files
 OBJS = $(OBJ_DIR)/ATM.o $(OBJ_DIR)/CardReader.o $(OBJ_DIR)/CashDispenser.o $(OBJ_DIR)/Money.o \
        $(OBJ_DIR)/OperatorPanel.o $(OBJ_DIR)/Account.o $(OBJ_DIR)/BankDB.o $(OBJ_DIR)/test-ATM.o \
-       $(OBJ_DIR)/Session.o
+       $(OBJ_DIR)/Session.o $(OBJ_DIR)/CustomerConsole.o
 
 # Linking
 $(TARGET) : $(OBJS) | $(BIN_DIR)
