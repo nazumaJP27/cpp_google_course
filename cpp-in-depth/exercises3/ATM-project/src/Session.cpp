@@ -75,17 +75,22 @@ void Session::process_transaction()
 
 void Session::deposit_transaction()
 {
-    
+    active_account_->get_balance_()->add(transaction_amount_);
+    reset_session();
 }
 
 void Session::withdraw_transaction()
 {
-
+    active_account_->get_balance_()->subtract(transaction_amount_);
+    reset_session();
 }
 
 void Session::transfer_transaction()
 {
+    active_account_->get_balance_()->subtract(transaction_amount_);
+    transfer_target_->get_balance_()->add(transaction_amount_);
     
+    reset_session();
 }
 
 void Session::display()
