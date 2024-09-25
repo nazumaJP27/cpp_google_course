@@ -21,4 +21,9 @@ public:
     void subtract(const Money *const amount);
     bool greater_equal(const Money *const compare_to) const;
     long double get_dollars() const { return cents_ / 100; }
+
+    // Mutators
+    void spend_all() { cents_ = 0; }
+    void set_dollars(long long dollars, short cents=0) { cents_ = (dollars * 100) + cents; }
+    void set_money(const Money money) { cents_ = money.cents_; }
 };

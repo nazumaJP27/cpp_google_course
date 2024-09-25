@@ -11,7 +11,7 @@ bool CardReader::read_card(const Card *const card)
         std::cout << "Card Inserted\n";
         return true;
     }
-    std::cout << "Invalid Card\n";
+    std::cout << "Error reading the card...\n";
     return false;
 }
 

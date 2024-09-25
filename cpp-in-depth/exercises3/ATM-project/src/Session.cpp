@@ -2,6 +2,18 @@
 
 Session::Session() : current_transaction_(TransactionType::NO_OP), active_account_(nullptr), transfer_target_(nullptr), transaction_amount_(nullptr) {}
 
+bool Session::start_session(Account *active_account)
+{
+    active_account_ = active_account;
+    // Check if the active_account Account pointer is not nullptr
+    if (!active_account_)
+    {
+        std::cout << "Invalid active account...\n";
+        return false;
+    }
+    return true;
+}
+
 void Session::reset_session()
 {
     current_transaction_ = TransactionType::NO_OP;
@@ -10,14 +22,21 @@ void Session::reset_session()
     transaction_amount_ = nullptr;
 }
 
-bool Session::start_transaction(TransactionType transaction, Money *transaction_money, Account *active_account, Account *transfer_target)
+bool Session::start_transaction(TransactionType transaction, Money *transaction_money, Account *transfer_target)
 {
+    // Check if the active_account Account pointer is not nullptr
+    if (!active_account_)
+    {
+        std::cout << "Invalid active account for " << transaction_type_str(current_transaction_) << " operation...\n";
+        return false;
+    }
+
     current_transaction_ = transaction;
     // If the TransactionType == TRANSFER, check if the tranfer_targer is not nullptr and not equal to the active_account
     if (current_transaction_ == TransactionType::TRANSFER)
     {
         transfer_target_ = transfer_target;
-        if (!transfer_target_ || transfer_target_ == active_account)
+        if (!transfer_target_ || transfer_target_ == active_account_)
         {
             std::cout << "Invalid target account for TRANSFER operation...\n";
             return false;
@@ -29,14 +48,6 @@ bool Session::start_transaction(TransactionType transaction, Money *transaction_
     if (!transaction_amount_ || transaction_amount_->get_dollars() < 1)
     {
         std::cout << "Invalid money for " << transaction_type_str(current_transaction_) << " operation...\n";
-        return false;
-    }
-
-    active_account_ = active_account;
-    // Check if the active_account Account pointer is not nullptr
-    if (!active_account_)
-    {
-        std::cout << "Invalid active account for " << transaction_type_str(current_transaction_) << " operation...\n";
         return false;
     }
     else
