@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Money.h"
+#include "Session.h" 
 #include <iostream>
 #include <string>
 
@@ -14,4 +15,5 @@ public:
     std::string get_card_number();
     Money get_money();
     bool get_PIN(short const &account_PIN);
+    TransactionType get_transaction();
 };

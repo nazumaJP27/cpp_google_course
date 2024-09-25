@@ -71,12 +71,30 @@ bool CustomerConsole::get_PIN(short const &account_PIN)
     return false;
 }
 
+TransactionType CustomerConsole::get_transaction()
+{
+    short input;
+    do
+    {
+        std::cout << "1) DEPOSIT\n2) WITHDRAW\n3) TRANSFER\n0) CANCEL\n";
+        if (!(std::cin >> input) || input < 0 || input > 3)
+        {
+            std::cin.clear();
+            std::cout << "Invalid input. Please enter a number between 0 and 3.\n";
+            input = -1;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    } while (input < 0);
+
+    // Cast the integer input to the TransactionType enum
+    return static_cast<TransactionType>(input);
+}
+
 // Remove characters from reference string ('-', '.', ',', ' ')
 void clean_str(std::string &dirt_str)
 {
-    //bool remove = [](char c) -> bool { return c == '-' || c == '.' || c == ',' || c == ' '; };
-
     std::string::iterator new_end = std::remove_if(dirt_str.begin(), dirt_str.end(), [](char c)
     { return c == '-' || c == '.' || c == ',' || c == ' '; });
+
     dirt_str.erase(new_end, dirt_str.end());
 }
