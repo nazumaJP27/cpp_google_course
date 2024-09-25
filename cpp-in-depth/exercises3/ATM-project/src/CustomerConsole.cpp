@@ -50,6 +50,27 @@ Money CustomerConsole::get_money()
     return Money(true, in_money * 100);
 }
 
+bool CustomerConsole::get_PIN(short const &account_PIN)
+{
+    for (short attempts = 3, in_PIN; attempts > 0; --attempts)
+    {
+        std::cout << "Insert PIN (4 digits): ";
+        if (!(std::cin >> in_PIN) || in_PIN != account_PIN)
+        {
+            std::cin.clear();
+            std::cout << "Invalid input.\n";
+        }
+        else if (in_PIN == account_PIN)
+            return true;
+
+        // Clear input buffer
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    std::cout << "Too many invalid inputs...\n";
+    return false;
+}
+
 // Remove characters from reference string ('-', '.', ',', ' ')
 void clean_str(std::string &dirt_str)
 {
