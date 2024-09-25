@@ -27,12 +27,13 @@ class ATM
     int id_;
     std::string place_;
     std::string bank_name;
-    std::string bank_address_; // Probably will be a path to a CSV
+    std::string bank_address_;
     bool card_inserted_;
     Money initial_cash_;
 
     // Member objects
 public:
+    const Card *p_card_;
     OperatorPanel operator_panel_;
     CardReader card_reader_;
     CashDispenser cash_dispenser_;
@@ -44,13 +45,10 @@ public:
     // Constructor
     ATM(int id, const std::string place, const std::string bank_name, std::string bank_address=DEFAULT_ACCOUNTS);
 
-    // Methods
-    void run();
-
     // Methods 
     void turn_on();
     void turn_off();
-    void card_inserted();
+    void run();
 
     // Assesors
     ATM_State get_state() const { return state_; };
@@ -63,9 +61,13 @@ public:
 
     // Mutator
     void set_bank_address(std::string address) { bank_address_ = address; }
+    void set_state(ATM_State state) { state_ = state; }
 
 private:
     void perform_startup();
     void perform_shutdown();
-
+    void card_inserted();
+    bool handle_deposit(Money *transaction_money);
+    bool handle_withdraw(Money *transaction_money);
+    bool handle_transfer(Money *transaction_money);
 };
