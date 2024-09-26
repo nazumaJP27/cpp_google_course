@@ -10,8 +10,8 @@ void ATM::turn_on()
 {
     if (state_ == OFF)
     {
-        state_ = IDLE;
         perform_startup();
+        set_state(IDLE);
     }
 }
 
@@ -19,14 +19,9 @@ void ATM::turn_off()
 {
     if (state_ == IDLE)
     {
-        state_ = OFF;
         perform_shutdown();
+        set_state(OFF);
     }
-}
-
-void ATM::card_inserted()
-{
-    card_inserted_ = true;
 }
 
 void ATM::perform_startup()
@@ -51,23 +46,9 @@ void ATM::perform_shutdown()
 void ATM::run(const Card *const p_card)
 {
     // The customer inserted a card into the atm [TEST]
-    if (card_reader_.read_card(p_card))
+    if (!(handle_card_inserted(p_card)))
     {
-        card_inserted();
-        // Get account to start the session
-        if (!(session_.start_session(bank_DB_.get_account(card_reader_.get_card_number()))))
-        {
-            set_state(IDLE);
-            return;
-        }
-        else
-        {
-            set_state(SERVING_CUSTOMER);
-        }
-    }
-    else
-    {
-        set_state(IDLE);
+        turn_off();
         return;
     }
 
@@ -99,12 +80,57 @@ void ATM::run(const Card *const p_card)
             bank_DB_.update_DB(bank_address_);
             in_transaction_money.spend_all();
         }
+        else
+        {
+            std::cout << "Transaction processing failed...\n";
+        }
 
         // Ask if the user wants to make another transaction
         if (!(customer_console_.get_new_transaction()))
+        {
             set_state(IDLE);
+            session_.reset_session();
+            card_reader_.eject_card();
+        }
     }
     return;
+}
+
+// Validate card, account, and initialize session
+bool ATM::handle_card_inserted(const Card *const p_card)
+{
+    card_inserted_ = true;
+    if (card_reader_.read_card(p_card))
+    {
+        // Get account to start the session
+        Account *active_account = bank_DB_.get_account(card_reader_.get_card_number());
+        if (session_.start_session(active_account))
+        {
+            // Validate session checking if the account isn't blocked and then prompt for the account PIN
+            if (active_account->get_valid() && customer_console_.get_PIN(active_account->get_PIN()))
+            {
+                set_state(SERVING_CUSTOMER);
+                return true;
+            }
+            else
+            {
+                std::cout << "ass\n";
+                // If too many invalid inputs for PIN
+                card_reader_.retain_card();
+
+                // Block the account associated with the card retained
+                bank_DB_.block_account(active_account);
+                bank_DB_.update_DB(bank_address_);
+            }
+        }
+        return false;
+    }
+    else
+    {
+        // If fail to read card
+        card_reader_.eject_card();
+        return false;
+    }
 }
 
 bool ATM::handle_deposit(Money *transaction_money)

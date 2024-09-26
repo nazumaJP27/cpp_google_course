@@ -16,7 +16,8 @@ BankDB::BankDB(const std::string &bank_address)
         bank_network_ = true;
         std::cout << "File " << bank_address << " openned...\n";
         
-        std::string line, card_number, card_flag, PIN_str, name, balance_str;
+        std::string line, card_number, card_flag, valid_str, PIN_str, name, balance_str;
+        bool valid;
         short PIN;
         unsigned long long balance;
         while (std::getline(file, line))
@@ -29,9 +30,13 @@ BankDB::BankDB(const std::string &bank_address)
                 // Parse the istringstream object (format: cardnumber, card flag, name, balance [in cents])
                 std::getline(line_stream, card_number, ',');
                 std::getline(line_stream, card_flag, ',');
+                std::getline(line_stream, valid_str, ',');
                 std::getline(line_stream, PIN_str, ',');
                 std::getline(line_stream, name, ',');
                 std::getline(line_stream, balance_str, ',');
+
+                // Convert valid to bool
+                valid = (valid_str == "1");
 
                 // Convert PIN to int
                 PIN = std::stoi(PIN_str);
@@ -40,7 +45,7 @@ BankDB::BankDB(const std::string &bank_address)
                 balance = std::stoull(balance_str);
 
                 // Create an Account object and add it to the vector
-                accounts_.emplace_back(card_number, card_flag, PIN, name, Money(true, balance));
+                accounts_.emplace_back(card_number, card_flag, valid, PIN, name, Money(true, balance));
             }
         }
     }
@@ -68,6 +73,7 @@ void BankDB::update_DB(const std::string &bank_address)
     {
         file << account.get_card_number() << ','
              << account.get_card_flag() << ','
+             << account.get_valid() << ','
              << account.get_PIN() << ','
              << account.get_name() << ','
              << account.get_balance()->to_string(true) << '\n'; // sign=false

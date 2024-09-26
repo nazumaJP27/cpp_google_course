@@ -18,6 +18,7 @@ public:
     // Methods
     Account* get_account(const std::string &card_number);
     void update_DB(const std::string &bank_address);
+    void block_account(Account *const account) const { account->block(); }
 
     // Accessors
     bool get_bank_network() { return bank_network_; }

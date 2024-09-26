@@ -16,7 +16,7 @@ public:
 
     // Methods
     bool read_card(const Card *const card);
-    void retain_card();   // Not implemented
+    void retain_card();
     void eject_card();
     std::string get_card_number() const;
 };

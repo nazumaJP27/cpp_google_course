@@ -30,6 +30,9 @@ public:
     void process_transaction();
     void display();
 
+    // Accessors
+    const Account *const get_active_account() const { return active_account_; }
+
 private:
     void deposit_transaction();
     void withdraw_transaction();

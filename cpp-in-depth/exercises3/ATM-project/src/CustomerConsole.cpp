@@ -74,6 +74,7 @@ bool CustomerConsole::get_PIN(short const &account_PIN)
 TransactionType CustomerConsole::get_transaction()
 {
     short input;
+
     do
     {
         std::cout << "1) DEPOSIT\n2) WITHDRAW\n3) TRANSFER\n0) CANCEL\n";
@@ -92,10 +93,12 @@ TransactionType CustomerConsole::get_transaction()
 
 bool CustomerConsole::get_new_transaction()
 {
-    short input;
-    do
+    short input = -1;
+
+    std::cout << "Do you wish to make another transaction?\n";
+    for (short attempts = 3; attempts > 0 && input < 0; --attempts)
     {
-        std::cout << "Do you wish to make another transaction?\n1) YES\n0) NO\n";
+        std::cout << "1) YES\n0) NO\n";
         if (!(std::cin >> input) || input < 0 || input > 1)
         {
             std::cin.clear();
@@ -103,9 +106,9 @@ bool CustomerConsole::get_new_transaction()
             input = -1;
         }
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    } while (input < 0);
+    }
 
-    if (input)
+    if (input == 1)
         return true;
     return false;
 }

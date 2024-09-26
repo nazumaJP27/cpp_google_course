@@ -8,7 +8,7 @@ bool CardReader::read_card(const Card *const card)
     if (card)
     {
         card_ = card;
-        std::cout << "Card Inserted\n";
+        std::cout << "Card Inserted.\n";
         return true;
     }
     std::cout << "Error reading the card...\n";
@@ -17,8 +17,13 @@ bool CardReader::read_card(const Card *const card)
 
 void CardReader::eject_card()
 {
-    std::cout << "Card " << card_->get_card_number() << " ejected...\n";
+    std::cout << "Card " << card_->get_card_number() << " | " << card_->get_card_flag() << " ejected...\n";
     card_ = nullptr;
+}
+
+void CardReader::retain_card()
+{
+    std::cout << "Card " << card_->get_card_number() << " | " << card_->get_card_flag() << " retained...\n";
 }
 
 std::string CardReader::get_card_number() const

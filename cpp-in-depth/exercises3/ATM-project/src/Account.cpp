@@ -1,7 +1,7 @@
 #include "../include/Account.h"
 
-Account::Account(std::string card_number, std::string card_flag, short PIN, std::string name, Money balance)
-        : card_(Card(card_number, card_flag)), PIN_(PIN), name_(name), balance_(balance) {}
+Account::Account(std::string card_number, std::string card_flag, bool valid, short PIN, std::string name, Money balance)
+        : card_(Card(card_number, card_flag)), valid_(valid), PIN_(PIN), name_(name), balance_(balance) {}
 
 void Account::display() const
 {

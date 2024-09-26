@@ -65,7 +65,7 @@ public:
 private:
     void perform_startup();
     void perform_shutdown();
-    void card_inserted();
+    bool handle_card_inserted(const Card *const p_card);
     bool handle_deposit(Money *transaction_money);
     bool handle_withdraw(Money *transaction_money);
     bool handle_transfer(Money *transaction_money);
