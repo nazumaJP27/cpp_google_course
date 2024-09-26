@@ -90,6 +90,26 @@ TransactionType CustomerConsole::get_transaction()
     return static_cast<TransactionType>(input);
 }
 
+bool CustomerConsole::get_new_transaction()
+{
+    short input;
+    do
+    {
+        std::cout << "Do you wish to make another transaction?\n1) YES\n0) NO\n";
+        if (!(std::cin >> input) || input < 0 || input > 1)
+        {
+            std::cin.clear();
+            std::cout << "Invalid input.\n";
+            input = -1;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    } while (input < 0);
+
+    if (input)
+        return true;
+    return false;
+}
+
 // Remove characters from reference string ('-', '.', ',', ' ')
 void clean_str(std::string &dirt_str)
 {

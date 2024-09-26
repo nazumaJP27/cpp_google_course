@@ -16,4 +16,5 @@ public:
     Money get_money();
     bool get_PIN(short const &account_PIN);
     TransactionType get_transaction();
+    bool get_new_transaction();
 };

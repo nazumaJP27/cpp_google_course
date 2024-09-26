@@ -3,7 +3,7 @@
 // Constructor
 ATM::ATM(int id, const std::string place, const std::string bank_name, const std::string bank_address)
     : state_(OFF), id_(id), place_(place), bank_name(bank_name), bank_address_(bank_address), card_inserted_(false), initial_cash_(0), 
-      p_card_(nullptr), operator_panel_(this), card_reader_(this), cash_dispenser_(), bank_DB_(bank_address_) {}
+      operator_panel_(this), card_reader_(this), cash_dispenser_(), bank_DB_(bank_address_) {}
 
 // Only used by the operator
 void ATM::turn_on()
@@ -48,10 +48,10 @@ void ATM::perform_shutdown()
     cash_dispenser_ = CashDispenser();
 }
 
-void ATM::run()
+void ATM::run(const Card *const p_card)
 {
     // The customer inserted a card into the atm [TEST]
-    if (card_reader_.read_card(p_card_))
+    if (card_reader_.read_card(p_card))
     {
         card_inserted();
         // Get account to start the session
@@ -67,7 +67,6 @@ void ATM::run()
     }
     else
     {
-        std::cout << "CU";
         set_state(IDLE);
         return;
     }
@@ -101,10 +100,11 @@ void ATM::run()
             in_transaction_money.spend_all();
         }
 
-        // WILL Ask if the user wants to make another transaction
-        // Then will set state to IDLE [TEST]
-        set_state(IDLE);
+        // Ask if the user wants to make another transaction
+        if (!(customer_console_.get_new_transaction()))
+            set_state(IDLE);
     }
+    return;
 }
 
 bool ATM::handle_deposit(Money *transaction_money)

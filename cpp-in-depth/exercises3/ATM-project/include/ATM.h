@@ -33,7 +33,6 @@ class ATM
 
     // Member objects
 public:
-    const Card *p_card_;
     OperatorPanel operator_panel_;
     CardReader card_reader_;
     CashDispenser cash_dispenser_;
@@ -48,7 +47,7 @@ public:
     // Methods 
     void turn_on();
     void turn_off();
-    void run();
+    void run(const Card *const p_card);
 
     // Assesors
     ATM_State get_state() const { return state_; };
