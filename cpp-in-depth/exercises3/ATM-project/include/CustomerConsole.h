@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Money.h"
-#include "Session.h" 
+#include "Session.h"
+#include "Message.h"
 #include <iostream>
 #include <string>
 

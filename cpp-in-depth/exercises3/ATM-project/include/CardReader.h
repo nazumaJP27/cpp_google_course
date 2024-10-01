@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Card.h"
+#include "Message.h"
 #include <iostream>
 
 class ATM; // Forward declaration

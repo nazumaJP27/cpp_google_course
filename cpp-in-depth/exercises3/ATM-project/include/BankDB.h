@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Account.h"
+#include "Message.h"
 #include <iostream>
 #include <string>
 #include <fstream>

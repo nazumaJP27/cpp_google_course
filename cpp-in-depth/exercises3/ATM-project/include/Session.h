@@ -2,6 +2,7 @@
 
 #include "Account.h"
 #include "Money.h"
+#include "Message.h"
 #include <iostream>
 
 enum TransactionType
@@ -31,7 +32,7 @@ public:
     void display();
 
     // Accessors
-    const Account *const get_active_account() const { return active_account_; }
+    const Account* get_active_account() const { return active_account_; }
 
 private:
     void deposit_transaction();

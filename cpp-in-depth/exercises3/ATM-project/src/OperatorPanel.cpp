@@ -7,7 +7,7 @@ Money OperatorPanel::get_initial_cash()
     long double cash;
     do
     {
-        std::cout << "Amount of money currently in the cash dispenser (only digits): ";
+        std::cout << "Initial cash (only digits): $";
         if (!(std::cin >> cash))
         {
             std::cin.clear();

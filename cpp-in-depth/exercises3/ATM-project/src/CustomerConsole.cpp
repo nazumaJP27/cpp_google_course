@@ -74,7 +74,7 @@ bool CustomerConsole::get_PIN(short const &account_PIN)
 TransactionType CustomerConsole::get_transaction()
 {
     short input;
-
+    
     do
     {
         std::cout << "1) DEPOSIT\n2) WITHDRAW\n3) TRANSFER\n0) CANCEL\n";

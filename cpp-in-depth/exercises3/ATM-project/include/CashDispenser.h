@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Money.h"
+#include "Message.h"
 #include <iostream>
 
 class CashDispenser

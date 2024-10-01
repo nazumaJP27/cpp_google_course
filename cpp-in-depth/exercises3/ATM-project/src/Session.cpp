@@ -8,7 +8,7 @@ bool Session::start_session(Account *active_account)
     // Check if the active_account Account pointer is not nullptr
     if (!active_account_)
     {
-        std::cout << "Invalid active account...\n";
+        Message::display_content("Invalid account...");
         return false;
     }
     return true;
@@ -27,7 +27,7 @@ bool Session::start_transaction(TransactionType transaction, Money *transaction_
     // Check if the active_account Account pointer is not nullptr
     if (!active_account_)
     {
-        std::cout << "Invalid active account for " << transaction_type_str(current_transaction_) << " operation...\n";
+        Message::display_content("Invalid active account for " + transaction_type_str(current_transaction_) + " operation...");
         return false;
     }
 
@@ -38,7 +38,7 @@ bool Session::start_transaction(TransactionType transaction, Money *transaction_
         transfer_target_ = transfer_target;
         if (!transfer_target_ || transfer_target_ == active_account_)
         {
-            std::cout << "Invalid target account for TRANSFER operation...\n";
+            Message::display_content("Invalid target account for TRANSFER operation...");
             return false;
         }
     }
@@ -47,19 +47,8 @@ bool Session::start_transaction(TransactionType transaction, Money *transaction_
     // Check if the transaction_money is not nullptr and not less than 1
     if (!transaction_amount_ || transaction_amount_->get_dollars() < 1)
     {
-        std::cout << "Invalid money for " << transaction_type_str(current_transaction_) << " operation...\n";
+        Message::display_content("Invalid money for " + transaction_type_str(current_transaction_) + " operation...");
         return false;
-    }
-    else
-    {
-        std::cout << "Active account:\n";
-        active_account_->display();
-        std::cout << "Transaction type: " << transaction_type_str(current_transaction_) << '\n';
-        if (transfer_target_)
-        {
-            std::cout << "Target account:\n";
-            transfer_target_->display();
-        }
     }
 
     return true;
@@ -102,16 +91,17 @@ void Session::transfer_transaction()
 
 void Session::display()
 {
-    std::cout << "Active account: ";
+    std::cout << Message::content_sep_line();
     if (active_account_)
     {
         active_account_->display();
-        std::cout << "Operation: " << transaction_type_str(current_transaction_) << '\n';
+        std::cout << "Operation: " << transaction_type_str(current_transaction_);
     }
     else
     {
-        std::cout << "-NO ACCOUNT-\n" << "Operation: -NO OPERATION-\n";
+        std::cout << "-NO ACCOUNT-\n" << "Operation: -NO OPERATION-";
     }
+    std::cout << Message::content_sep_line();
 }
 
 std::string transaction_type_str(TransactionType type)

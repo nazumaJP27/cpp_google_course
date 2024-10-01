@@ -6,8 +6,6 @@ CashDispenser::CashDispenser() : cash_on_hand_(Money(0)) {}
 void CashDispenser::set_initial_cash(const Money *const initial_cash)
 {
     cash_on_hand_.add(initial_cash);
-    std::cout << "Initial cash: " << get_cash_on_hand()->to_string();
-    std::cout << '\n';
 }
 
 bool CashDispenser::check_cash_on_hand(const Money *const amount) const
@@ -26,7 +24,7 @@ bool CashDispenser::dispense_cash(const Money *const amount)
     }
     else
     {
-        std::cout << "Not enough cash on the ATM for this request...\n";
+        Message::display_content("Not enough cash on the ATM for this request...");
         return false;
     }
 }

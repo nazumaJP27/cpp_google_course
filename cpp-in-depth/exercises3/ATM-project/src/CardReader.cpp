@@ -11,19 +11,19 @@ bool CardReader::read_card(const Card *const card)
         std::cout << "Card Inserted.\n";
         return true;
     }
-    std::cout << "Error reading the card...\n";
+    Message::display_content("Error reading the card...");
     return false;
 }
 
 void CardReader::eject_card()
 {
-    std::cout << "Card " << card_->get_card_number() << " | " << card_->get_card_flag() << " ejected...\n";
+    Message::display_content("Card " + card_->get_card_number() + " | " + card_->get_card_flag() + " ejected...");
     card_ = nullptr;
 }
 
 void CardReader::retain_card()
 {
-    std::cout << "Card " << card_->get_card_number() << " | " << card_->get_card_flag() << " retained...\n";
+    Message::display_content("Card " + card_->get_card_number() + " | " + card_->get_card_flag() + " retained...");
 }
 
 std::string CardReader::get_card_number() const
@@ -34,7 +34,7 @@ std::string CardReader::get_card_number() const
     }
     else
     {
-        std::cout << "No card inserted\n";
+        Message::display_content("No card inserted");
     }
     return 0;
 }

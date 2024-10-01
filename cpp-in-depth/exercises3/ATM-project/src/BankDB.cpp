@@ -9,12 +9,12 @@ BankDB::BankDB(const std::string &bank_address)
     if (!file)
     {
         bank_network_ = false;
-        std::cout << "Could not open file: " << bank_address << std::endl;
+        Message::display_content("Could not open file: " + bank_address);
     }
     else
     {
         bank_network_ = true;
-        std::cout << "File " << bank_address << " openned...\n";
+        Message::display_content("File " + bank_address + " openned...");
         
         std::string line, card_number, card_flag, valid_str, PIN_str, name, balance_str;
         bool valid;
@@ -61,7 +61,7 @@ Account* BankDB::get_account(const std::string &card_number)
             return &accounts_[i];
     }
 
-    std::cout << "No matching account for card number " << card_number << " found...\n";
+    Message::display_content("No matching account for card number " + card_number + " found...");
     return nullptr;
 }
 
@@ -78,6 +78,6 @@ void BankDB::update_DB(const std::string &bank_address)
              << account.get_name() << ','
              << account.get_balance()->to_string(true) << '\n'; // sign=false
     }
-    std::cout << "Bank Database updated...\n";
+    Message::display_content("Bank Database updated...");
     file.close();
 }

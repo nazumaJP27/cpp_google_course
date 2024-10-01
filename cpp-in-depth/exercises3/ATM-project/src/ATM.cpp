@@ -2,7 +2,7 @@
 
 // Constructor
 ATM::ATM(int id, const std::string place, const std::string bank_name, const std::string bank_address)
-    : state_(OFF), id_(id), place_(place), bank_name(bank_name), bank_address_(bank_address), card_inserted_(false), initial_cash_(0), 
+    : state_(OFF), id_(id), place_(place), bank_name(bank_name), bank_address_(bank_address), initial_cash_(0), 
       operator_panel_(this), card_reader_(this), cash_dispenser_(), bank_DB_(bank_address_) {}
 
 // Only used by the operator
@@ -25,19 +25,18 @@ void ATM::turn_off()
 }
 
 void ATM::perform_startup()
-{
-    std::cout << "ATM turning on...\n"
-              << "The operator now need to enter the current amount of money inside the ATM...\n";
+{   
+    Message::display_content("ATM turning on...\nThe operator now need to enter the current amount of money inside the ATM...");
     // Asks operator to enter the amount of money currently in the cash dispenser
+    Message::display_menu("OPERATOR PANEL");
     initial_cash_ = operator_panel_.get_initial_cash();
     cash_dispenser_.set_initial_cash(&initial_cash_);
+    Message::end_menu();
 }
 
 void ATM::perform_shutdown()
 {
-    // The connection with the "bank" is closed
-    std::cout << "ATM shutdown...\n"
-              << "The operator is now free to remove deposited envelopes, replenish cash and paper, etc...\n";
+    Message::display_content("ATM shutdown...\nThe operator is now free to remove deposited envelopes, replenish cash and paper, etc...");
     // Reset cash variables
     initial_cash_.spend_all();
     cash_dispenser_ = CashDispenser();
@@ -52,12 +51,14 @@ void ATM::run(const Card *const p_card)
         return;
     }
 
+    Message::display_menu("Session: " + session_.get_active_account()->get_name());
     // Instanciate a money object (ZERO DOLLARS) to hold the transaction amount
     Money in_transaction_money(0);
 
     bool valid_transaction = false;
     while (state_ == SERVING_CUSTOMER)
     {
+        Message::display_menu("SELECT TRANSACTION TYPE");
         switch (customer_console_.get_transaction())
         {
         case DEPOSIT:
@@ -82,7 +83,7 @@ void ATM::run(const Card *const p_card)
         }
         else
         {
-            std::cout << "Transaction processing failed...\n";
+            Message::display_content("Transaction processing failed...");
         }
 
         // Ask if the user wants to make another transaction
@@ -99,7 +100,6 @@ void ATM::run(const Card *const p_card)
 // Validate card, account, and initialize session
 bool ATM::handle_card_inserted(const Card *const p_card)
 {
-    card_inserted_ = true;
     if (card_reader_.read_card(p_card))
     {
         // Get account to start the session
@@ -114,7 +114,6 @@ bool ATM::handle_card_inserted(const Card *const p_card)
             }
             else
             {
-                std::cout << "ass\n";
                 // If too many invalid inputs for PIN
                 card_reader_.retain_card();
 
@@ -135,17 +134,27 @@ bool ATM::handle_card_inserted(const Card *const p_card)
 
 bool ATM::handle_deposit(Money *transaction_money)
 {
+    Message::display_menu("DEPOSIT");
+
+    session_.get_active_account()->display();
     // Prompt for transaction money amount
     transaction_money->set_money(customer_console_.get_money());
 
     if (session_.start_transaction(DEPOSIT, transaction_money))
+    {
         return true;
+    }
     else
+    {
         return false;
+    }
 }
 
 bool ATM::handle_withdraw(Money *transaction_money)
 {
+    Message::display_menu("WITHDRAW");
+
+    session_.get_active_account()->display();
     // Prompt for transaction money amount
     transaction_money->set_money(customer_console_.get_money());
 
@@ -159,24 +168,32 @@ bool ATM::handle_withdraw(Money *transaction_money)
             return true;
         }
         else
+        {
             return false;
+        }
     }
     else
     {
-        std::cout << "Insuficient cash in the ATM cash dispenser.\nMaximum value for withdraw operations: "
-                  << cash_dispenser_.get_cash_on_hand()->to_string();
+        std::cout << Message::content_sep_line()
+                  << "Insuficient cash in the ATM cash dispenser.\nMaximum value for withdraw operations: "
+                  << cash_dispenser_.get_cash_on_hand()->to_string()
+                  << Message::content_sep_line();
         return false;
     }
 }
 
 bool ATM::handle_transfer(Money *transaction_money)
 {
+    Message::display_menu("TRANSFER");
+
+    session_.get_active_account()->display();
     // Prompt for transaction money amount
     transaction_money->set_money(customer_console_.get_money());
 
     // Prompt for the target account for the TRANSFER operation
     Account *in_transfer_target = nullptr;
     std::string in_card_number;
+
     std::cout << "Enter the card number corresponding to the account to which you want to make the transfer.\n";
     do
     {
@@ -185,7 +202,11 @@ bool ATM::handle_transfer(Money *transaction_money)
     while (!(in_transfer_target = bank_DB_.get_account(in_card_number)));
 
     if (session_.start_transaction(TRANSFER, transaction_money, in_transfer_target))
+    {
         return true;
+    }
     else
+    {
         return false;
+    }
 }

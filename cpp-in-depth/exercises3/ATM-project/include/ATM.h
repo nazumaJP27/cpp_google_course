@@ -8,6 +8,7 @@
 #include "BankDB.h"
 #include "Session.h"
 #include "CustomerConsole.h"
+#include "Message.h"
 
 #include <iostream>
 #include <string>
@@ -28,7 +29,6 @@ class ATM
     std::string place_;
     std::string bank_name;
     std::string bank_address_;
-    bool card_inserted_;
     Money initial_cash_;
 
     // Member objects
@@ -56,7 +56,6 @@ public:
     std::string get_bank_name() const { return bank_name; }
     std::string get_bank_address() const { return bank_address_; }
     const Money* get_initial_cash() const { return &initial_cash_; }
-    bool get_card_inserted() const { return card_inserted_; }
 
     // Mutator
     void set_bank_address(std::string address) { bank_address_ = address; }
