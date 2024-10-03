@@ -23,7 +23,7 @@ BankDB::BankDB(const std::string &bank_address)
         while (std::getline(file, line))
         {
             balance = 0;
-            if (!(std::isspace(line[0])))
+            if (!(std::isspace(line[0]) || line[0] == '#'))
             {
                 std::istringstream line_stream(line);
 
@@ -69,6 +69,8 @@ Account* BankDB::get_account(const std::string &card_number)
 void BankDB::update_DB(const std::string &bank_address)
 {
     std::ofstream file(bank_address);
+    // Write header of each collumn in the CSV
+    file << "# Card Number, Card Flag, Validity (1 for valid), PIN, Name, Balance\n";
     for (const Account &account : accounts_)
     {
         file << account.get_card_number() << ','
