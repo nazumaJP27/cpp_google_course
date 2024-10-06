@@ -14,6 +14,7 @@ public:
 
     // Methods
     std::string get_card_number();
+    std::string get_card_flag();
     Money get_money();
     bool get_PIN(short const &account_PIN);
     TransactionType get_transaction();

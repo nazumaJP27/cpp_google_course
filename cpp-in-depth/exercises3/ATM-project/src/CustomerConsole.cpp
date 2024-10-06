@@ -19,14 +19,12 @@ std::string CustomerConsole::get_card_number()
 
         clean_str(card_number);
         card_number_len = card_number.length();
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         // Check the length of the card number and if it has only digits
         if (card_number_len < 15 || card_number_len > 16 || !std::all_of(card_number.begin(), card_number.end(), ::isdigit))
         {
             std::cout << "Invalid card number...\n";
             card_number.clear();
-            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     } while (card_number.empty());
 

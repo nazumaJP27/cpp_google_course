@@ -27,12 +27,11 @@ class ATM
     ATM_State state_;
     int id_;
     std::string place_;
-    std::string bank_name;
+    std::string bank_name_;
     std::string bank_address_;
     Money initial_cash_;
 
     // Member objects
-public:
     OperatorPanel operator_panel_;
     CardReader card_reader_;
     CashDispenser cash_dispenser_;
@@ -42,6 +41,7 @@ public:
 
 public:
     // Constructor
+    ATM();
     ATM(int id, const std::string place, const std::string bank_name, std::string bank_address=DEFAULT_ACCOUNTS);
 
     // Methods 
@@ -52,13 +52,16 @@ public:
     // Assesors
     ATM_State get_state() const { return state_; };
     int get_id() const { return id_; }
-    std::string get_place() const { return place_; }
-    std::string get_bank_name() const { return bank_name; }
-    std::string get_bank_address() const { return bank_address_; }
+    const std::string& get_place() const { return place_; }
+    const std::string& get_bank_name() const { return bank_name_; }
+    const std::string& get_bank_address() const { return bank_address_; }
     const Money* get_initial_cash() const { return &initial_cash_; }
 
     // Mutator
-    void set_bank_address(std::string address) { bank_address_ = address; }
+    void set_id(int id) { id_ = id; }
+    void set_place(const std::string &place) { place_ = place; }
+    void set_bank_name(const std::string &bank_name) { bank_name_ = bank_name; }
+    void set_bank_address(const std::string &address) { bank_address_ = address; }
     void set_state(ATM_State state) { state_ = state; }
 
 private:

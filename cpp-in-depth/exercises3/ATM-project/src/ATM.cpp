@@ -1,14 +1,18 @@
 #include "../include/ATM.h"
 
 // Constructor
+ATM::ATM() : state_(OFF), id_(0), place_("NY"), bank_name_("NY Bank"), bank_address_(DEFAULT_ACCOUNTS), initial_cash_(0), 
+             operator_panel_(this), card_reader_(this), cash_dispenser_(), bank_DB_(DEFAULT_ACCOUNTS) {}
+
 ATM::ATM(int id, const std::string place, const std::string bank_name, const std::string bank_address)
-    : state_(OFF), id_(id), place_(place), bank_name(bank_name), bank_address_(bank_address), initial_cash_(0), 
+    : state_(OFF), id_(id), place_(place), bank_name_(bank_name), bank_address_(bank_address), initial_cash_(0), 
       operator_panel_(this), card_reader_(this), cash_dispenser_(), bank_DB_(bank_address_) {}
 
 // Only used by the operator
 void ATM::turn_on()
 {
-    if (state_ == OFF)
+    // Check if there is a successfull network with the bank
+    if (bank_DB_.get_bank_network() && state_ == OFF)
     {
         perform_startup();
         set_state(IDLE);
@@ -16,7 +20,7 @@ void ATM::turn_on()
 }
 
 void ATM::turn_off()
-{
+{   
     if (state_ == IDLE)
     {
         perform_shutdown();
@@ -187,8 +191,11 @@ bool ATM::handle_transfer(Money *transaction_money)
     Message::display_menu("TRANSFER");
 
     session_.get_active_account()->display();
-    // Prompt for transaction money amount
-    transaction_money->set_money(customer_console_.get_money());
+    // Prompt for transaction money amount while the value is greater than the account balance
+    do
+    {
+        transaction_money->set_money(customer_console_.get_money());
+    } while (!(session_.get_active_account()->get_balance()->greater_equal(transaction_money)));
 
     // Prompt for the target account for the TRANSFER operation
     Account *in_transfer_target = nullptr;
