@@ -1,2 +1,9 @@
-# .exe files
+# .exe and object files
 *.exe
+*.o
+
+# CSV files
+*.csv
+
+#files used for testing code implementation
+test-*
