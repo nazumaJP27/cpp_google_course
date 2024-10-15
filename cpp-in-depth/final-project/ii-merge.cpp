@@ -12,9 +12,10 @@ std::vector<int>* merge(std::vector<int>& postings0, std::vector<int>& postings1
 {
     std::vector<int> *merge_postings = new std::vector<int>;
     int len_postings0 = postings0.size();
+    int len_postings1 = postings1.size();
     int cursor0 = 0, cursor1 = 0;
 
-    for (int i = 0; i < len_postings0; ++i)
+    while (cursor0 < len_postings0 && cursor1 < len_postings1)
     {
         if (postings0[cursor0] == postings1[cursor1])
         {
