@@ -9,12 +9,19 @@
 class Document
 {
     std::string text_;
-    std::vector<std::string> words;
+    std::vector<std::string> words_;
 
 public:
-    // Methods
-    void load_from_file(const std::string &file_path);
+    // Constructor
+    Document(const std::string &file_path);
 
+    // Methods
+private:
+    void load_from_file(const std::string &file_path);
+    void tokenize();
+
+public:
     // Accessors
     const std::string &get_text() const { return text_; }
+    const std::vector<std::string> &get_words() const { return words_; }
 };

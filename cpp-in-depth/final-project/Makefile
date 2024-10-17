@@ -12,7 +12,7 @@ H_DIR = include
 TARGET = ${BIN_DIR}/test-project.exe
 
 # Source files
-SRCS = ${SRC_DIR}/Document.cpp ${SRC_DIR}/test-Document.cpp
+SRCS = ${SRC_DIR}/Document.cpp ${SRC_DIR}/utils.cpp ${SRC_DIR}/test-project.cpp
 
 # Object files
 OBJS = ${SRCS:${SRC_DIR}/%.cpp=${OBJ_DIR}/%.o}
