@@ -38,6 +38,5 @@ void Document::tokenize()
     // Testing with unorded_map
     std::cout << words_.size() << '\n'
               << words_.bucket_count() << '\n'
-              << words_.max_size();
-    
+              << words_.max_size() << '\n';
 }
