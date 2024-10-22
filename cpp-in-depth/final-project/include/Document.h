@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils.h"
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -9,20 +11,8 @@
 
 class Document
 {
-    struct Node
-    {
-        std::string data;
-        Node *next;
-    };
-
-    struct WordInfo
-    {
-        int frequence = 0;
-        std::vector<int> positions;
-    };
-
     std::string text_;
-    std::unordered_map<std::string, WordInfo> words_;
+    HashTable terms_;
 
 public:
     // Constructor
@@ -36,5 +26,5 @@ private:
 public:
     // Accessors
     const std::string &get_text() const { return text_; }
-    const std::unordered_map<std::string, WordInfo> &get_words() const { return words_; }
+    const HashTable &get_terms() const { return terms_; }
 };

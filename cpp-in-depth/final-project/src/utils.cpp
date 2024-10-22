@@ -51,26 +51,32 @@ const unsigned int HashTable::hash(const std::string &key)
     return index;
 }
 
-void HashTable::insert(const std::string &in_word)
+void HashTable::insert(const std::string &in_word, const int &in_position)
 {
     unsigned int key = hash(in_word);
- 
-    node *new_node = new node;
-    new_node->next = nullptr;
-    new_node->word = in_word;
 
     if (table_[key] == nullptr)
     {
-        table_[key] = new_node;
+        table_[key] = new node(in_word);
+        table_[key]->info.frequence++;
+        table_[key]->info.positions.push_back(in_position);
     }
     else
     {
         node *cursor = table_[key];
-        while (cursor->next != nullptr)
+        while(cursor->word != in_word && cursor->next != nullptr)
         {
             cursor = cursor->next;
         }
-        cursor->next = new_node;
+        if (cursor->word == in_word)
+        {
+            cursor->info.frequence++;
+            table_[key]->info.positions.push_back(in_position);
+        }
+        else
+        {
+            cursor->next = new node(in_word);
+        }
     }
 }
 
