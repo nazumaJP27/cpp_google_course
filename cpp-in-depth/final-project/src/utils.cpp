@@ -57,9 +57,7 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
 
     if (table_[key] == nullptr)
     {
-        table_[key] = new node(in_word);
-        table_[key]->info.frequence++;
-        table_[key]->info.positions.push_back(in_position);
+        table_[key] = new node(in_word, in_position);
     }
     else
     {
@@ -75,7 +73,7 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
         }
         else
         {
-            cursor->next = new node(in_word);
+            cursor->next = new node(in_word, 1, in_position);
         }
     }
 }
@@ -83,7 +81,8 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
 // Returns a nullpr if word not in hash table
 node *HashTable::find(const std::string &in_word)
 {
-    unsigned int key = hash(in_word);
+    std::string word = normalize(in_word);
+    unsigned int key = hash(word);
     node *cursor = table_[key];
 
     if (cursor)
