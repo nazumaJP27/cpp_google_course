@@ -13,6 +13,11 @@ std::string normalize(const std::string &in_word)
     return out_word;
 }
 
+bool is_stop_word(const std::string &in_word)
+{
+    return stop_words.find(in_word) != stop_words.end();
+}
+
 // Constructor 
 HashTable::HashTable(unsigned int size) : table_(new node*[size]), size_(size)
 {
@@ -40,7 +45,7 @@ HashTable::~HashTable()
     delete [] table_;
 }
 
-const unsigned int HashTable::hash(const std::string &key)
+const unsigned int HashTable::hash(const std::string &key) const
 {
     unsigned int index = 1;
 
@@ -53,6 +58,11 @@ const unsigned int HashTable::hash(const std::string &key)
 
 void HashTable::insert(const std::string &in_word, const int &in_position)
 {
+    if (is_stop_word(in_word))
+    {
+        return;
+    }
+
     unsigned int key = hash(in_word);
 
     if (table_[key] == nullptr)
@@ -79,7 +89,7 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
 }
 
 // Returns a nullpr if word not in hash table
-node *HashTable::find(const std::string &in_word)
+node *HashTable::find(const std::string &in_word) const
 {
     std::string word = normalize(in_word);
     unsigned int key = hash(word);

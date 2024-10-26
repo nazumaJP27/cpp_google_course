@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <unordered_map>
 #include <vector>
 
 class Document
