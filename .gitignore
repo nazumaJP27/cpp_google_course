@@ -5,5 +5,8 @@
 # CSV files
 *.csv
 
-#files used for testing code implementation
+# files used for testing code implementation
 test-*
+
+# personal use for WSL script
+wrr.sh 
