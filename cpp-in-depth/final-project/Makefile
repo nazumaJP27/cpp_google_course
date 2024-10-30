@@ -9,7 +9,7 @@ BIN_DIR = bin
 H_DIR = include
 
 # Target executable
-TARGET = ${BIN_DIR}/test-project.exe
+TARGET = ${BIN_DIR}/test-main.exe
 
 # Source files
 SRCS = ${SRC_DIR}/Document.cpp ${SRC_DIR}/utils.cpp ${SRC_DIR}/test-project.cpp
@@ -32,6 +32,6 @@ ${BIN_DIR}:
 	mkdir $@
 
 clean:
-	rm -f $(OBJ_DIR)/*.o $(TARGET)
+	rm -rf ${OBJ_DIR} ${BIN_DIR}
 clean_win:
 	rmdir /S /Q ${OBJ_DIR} | rmdir /S /Q ${BIN_DIR}

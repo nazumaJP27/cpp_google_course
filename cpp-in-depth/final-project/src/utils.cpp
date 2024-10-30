@@ -79,11 +79,11 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
         if (cursor->word == in_word)
         {
             cursor->info.frequence++;
-            table_[key]->info.positions.push_back(in_position);
+            cursor->info.positions.push_back(in_position);
         }
         else
         {
-            cursor->next = new node(in_word, 1, in_position);
+            cursor->next = new node(in_word, in_position);
         }
     }
 }
