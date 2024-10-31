@@ -19,7 +19,7 @@ bool is_stop_word(const std::string &in_word)
 }
 
 // Constructor 
-HashTable::HashTable(unsigned int size) : table_(new node*[size]), size_(size)
+HashTable::HashTable(unsigned int size) : table_(new TermNode*[size]), size_(size)
 {
     for (unsigned int i = 0; i < size; ++i)
     {
@@ -30,8 +30,8 @@ HashTable::HashTable(unsigned int size) : table_(new node*[size]), size_(size)
 // Destructor
 HashTable::~HashTable()
 {
-    node *curr = nullptr;
-    node *temp = nullptr;
+    TermNode *curr = nullptr;
+    TermNode *temp = nullptr;
     for (unsigned int i = 0; i < size_; ++i)
     {
         curr = table_[i];
@@ -51,9 +51,9 @@ const unsigned int HashTable::hash(const std::string &key) const
 
     for (char c : key)
     {
-        index = (index * c) % size_;
+        index = (index * c);
     }
-    return index;
+    return index % size_;
 }
 
 void HashTable::insert(const std::string &in_word, const int &in_position)
@@ -67,11 +67,11 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
 
     if (table_[key] == nullptr)
     {
-        table_[key] = new node(in_word, in_position);
+        table_[key] = new TermNode(in_word, in_position);
     }
     else
     {
-        node *cursor = table_[key];
+        TermNode *cursor = table_[key];
         while(cursor->word != in_word && cursor->next != nullptr)
         {
             cursor = cursor->next;
@@ -83,17 +83,17 @@ void HashTable::insert(const std::string &in_word, const int &in_position)
         }
         else
         {
-            cursor->next = new node(in_word, in_position);
+            cursor->next = new TermNode(in_word, in_position);
         }
     }
 }
 
 // Returns a nullpr if word not in hash table
-node *HashTable::find(const std::string &in_word) const
+TermNode *HashTable::find(const std::string &in_word) const
 {
     std::string word = normalize(in_word);
     unsigned int key = hash(word);
-    node *cursor = table_[key];
+    TermNode *cursor = table_[key];
 
     if (cursor)
     {

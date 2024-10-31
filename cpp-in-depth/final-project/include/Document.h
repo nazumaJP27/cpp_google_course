@@ -8,8 +8,12 @@
 #include <fstream>
 #include <vector>
 
+extern const char *DEFAULT_DOCS_PATH;
+extern unsigned int DOC_ID;
+
 class Document
 {
+    unsigned int doc_id;
     std::string text_;
     HashTable terms_;
 

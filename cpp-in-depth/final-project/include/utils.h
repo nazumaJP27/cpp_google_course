@@ -4,6 +4,9 @@
 #include <unordered_set>
 #include <vector>
 
+// Constants
+const unsigned int HT_DEFAULT_SIZE = 27000;
+
 std::string normalize(const std::string &in_word);
 
 // Stop-words
@@ -12,29 +15,27 @@ const std::unordered_set<std::string> stop_words({"a", "and", "if", "in", "of", 
 bool is_stop_word(const std::string &in_word);
 
 // HashTable ::
-const unsigned int HT_DEFAULT_SIZE = 2700;
-
-struct node
+struct TermNode
 {
     struct TermInfo
     {
         int frequence = 0;
         std::vector<int> positions;
 
-        TermInfo(const int &in_frequence=1, const int &in_position=0) : frequence(in_frequence), positions({in_position}) {}
+        TermInfo(const int in_frequence=1, const int in_position=0) : frequence(in_frequence), positions({in_position}) {}
     };
 
     std::string word;
     TermInfo info;
-    node *next;
+    TermNode *next;
 
-    node(const std::string &in_word, const int in_position, const int in_frequence=1) : word(in_word), info(in_frequence, in_position), next(nullptr) {}
+    TermNode(const std::string &in_word, const int in_position, const int in_frequence=1) : word(in_word), info(in_frequence, in_position), next(nullptr) {}
 
 };
 
 struct HashTable
 {
-    node **table_;
+    TermNode **table_;
     const unsigned int size_;
 
     // Constructor
@@ -43,5 +44,5 @@ struct HashTable
 
     const unsigned int hash(const std::string &key) const;
     void insert(const std::string &in_word, const int &in_position=0);
-    node *find(const std::string &in_word) const;
+    TermNode *find(const std::string &in_word) const;
 };
