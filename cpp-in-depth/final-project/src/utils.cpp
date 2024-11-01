@@ -56,7 +56,7 @@ const unsigned int HashTable::hash(const std::string &key) const
     return index % size_;
 }
 
-void HashTable::insert(const std::string &in_word, const int &in_position)
+void HashTable::insert(const std::string &in_word, const int &in_position) const
 {
     if (is_stop_word(in_word))
     {

@@ -43,6 +43,10 @@ struct HashTable
     ~HashTable();
 
     const unsigned int hash(const std::string &key) const;
-    void insert(const std::string &in_word, const int &in_position=0);
+    void insert(const std::string &in_word, const int &in_position=0) const;
     TermNode *find(const std::string &in_word) const;
+
+    // Accessors
+    const TermNode* const *get_table() const { return table_; }
+    const unsigned int get_size() const { return size_; }
 };
