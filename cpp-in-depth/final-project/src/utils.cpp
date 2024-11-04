@@ -47,18 +47,12 @@ HashTable::~HashTable()
 
 const unsigned int HashTable::hash(const std::string &key) const
 {
-    unsigned int index = 1;
-
-    for (char c : key)
-    {
-        index = (index * c);
-    }
-    return index % size_;
+    return std::hash<std::string>{}(key) % size_;
 }
 
 void HashTable::insert(const std::string &in_word, const int &in_position) const
 {
-    if (is_stop_word(in_word))
+    if (in_word.length() > TERM_MAX_LENGTH || in_word.empty() || is_stop_word(in_word))
     {
         return;
     }

@@ -5,7 +5,8 @@
 #include <vector>
 
 // Constants
-const unsigned int HT_DEFAULT_SIZE = 27000;
+const unsigned int HT_DEFAULT_SIZE = 27017;
+const unsigned int TERM_MAX_LENGTH = 50;
 
 std::string normalize(const std::string &in_word);
 
