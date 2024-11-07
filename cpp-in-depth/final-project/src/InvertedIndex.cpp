@@ -1,14 +1,30 @@
 #include "../include/InvertedIndex.h"
 
-// Default constructor
-InvertedIndex::InvertedIndex() {}
-
 // Constructor
-InvertedIndex::InvertedIndex(const std::vector<Document*> &in_documents)
+InvertedIndex::InvertedIndex(const std::string &in_docs_path=DEFAULT_DOCS_PATH) : docs_path_(in_docs_path)
 {
-    for (Document *doc : in_documents)
+    // Iterate over the files in the doc_path and create Document objects
+    for (const auto &file : std::filesystem::directory_iterator(docs_path_))
+    {
+        if (file.is_regular_file() && file.path().extension() == ".txt")
+        {
+            Document *doc = new Document(file.path().string());
+            documents_.emplace_back(doc);
+        }
+    }
+
+    for (const Document *doc : documents_)
     {
         add_document(*doc);
+    }
+}
+
+// Destructor
+InvertedIndex::~InvertedIndex()
+{
+    for (const Document *doc : documents_)
+    {
+        delete doc;
     }
 }
 

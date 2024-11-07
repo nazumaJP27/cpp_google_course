@@ -4,7 +4,7 @@ const char *DEFAULT_DOCS_PATH = "test-books";
 unsigned int DOC_ID = 0; // Starts at 0 and is incremented by 1 on each Document object instantiation
 
 // Constructor
-Document::Document(const std::string &file_path=DEFAULT_DOCS_PATH) : doc_id_(DOC_ID)
+Document::Document(const std::string &file_path=DEFAULT_DOCS_PATH) : doc_id_(DOC_ID), path_(file_path)
 {
     load_from_file(file_path);
     tokenize();

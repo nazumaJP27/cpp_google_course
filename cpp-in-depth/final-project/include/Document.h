@@ -16,6 +16,7 @@ class Document
     unsigned int doc_id_;
     std::string text_;
     HashTable terms_;
+    std::string path_;
 
 public:
     // Constructor
@@ -31,4 +32,5 @@ public:
     const unsigned int get_doc_id() const { return doc_id_; }
     const std::string &get_text() const { return text_; }
     const HashTable &get_terms() const { return terms_; }
+    const std::string &get_path() const { return path_; }
 };
