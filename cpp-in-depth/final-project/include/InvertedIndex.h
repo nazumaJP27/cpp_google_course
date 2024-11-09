@@ -3,6 +3,7 @@
 #include "Document.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <sstream>
 #include <vector>
@@ -29,5 +30,6 @@ public:
 
 private:
     void add_document(const Document &in_doc) const;
-    std::vector<std::string> tokenize_query(const std::string &in_query);
+    std::vector<const TermNode*> tokenize_query(const std::string &in_query);
+    std::vector<int> merge(const std::vector<int>& postings0, const std::vector<int>& postings1);
 };

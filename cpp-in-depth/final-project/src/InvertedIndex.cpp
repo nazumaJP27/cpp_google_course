@@ -44,3 +44,92 @@ void InvertedIndex::add_document(const Document &in_doc) const
         }
     }
 }
+
+// Tokenize and merge query terms, then returns a vector with the document IDs 
+const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
+{
+    std::vector<const TermNode*> query_terms = tokenize_query(in_query);
+    int len_query_terms = query_terms.size();
+
+    if (len_query_terms == 1)
+    {
+        return query_terms[0]->info.positions;
+    }
+
+    // Initialze a vector to hold the postings lists of each term in query_terms (starting from the second term)
+    std::vector<std::vector<int>> terms_postings;
+    for (int i = 1; i < len_query_terms; ++i)
+    {
+        terms_postings.push_back(query_terms[i]->info.positions);
+    }
+
+    // Iterate over the terms_postings and update the possible_doc_ids with merge()
+    std::vector<int> possible_doc_ids = query_terms[0]->info.positions;
+    for (const std::vector<int>& postings : terms_postings)
+    {
+        if (possible_doc_ids.size())
+        {
+            possible_doc_ids = merge(possible_doc_ids, postings);
+        }
+        else
+        {
+            break;
+        }
+    }
+    return possible_doc_ids;
+}
+
+// Tokenize query and return its terms into a vector
+std::vector<const TermNode*> InvertedIndex::tokenize_query(const std::string &in_query)
+{
+    std::stringstream query_stream(in_query);
+    std::string word;
+    const TermNode *curr_term;
+    std::vector<const TermNode*> tokenized_query;
+
+    while (query_stream >> word)
+    {
+        word = normalize(word);
+        if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
+        {
+            std::cout << "Term \"" << word << "\" discarted from search...\n";
+            continue;
+        }
+        else if ((curr_term = ii_terms_.find(word)))
+        {
+            tokenized_query.push_back(curr_term);
+        }
+        else
+        {
+            std::cout << "Term \"" << word << "\" not found in the Inverted Index...\n";
+        }
+    }
+
+    // Sort TermNodes in the vector by frequence in ascendig order and return
+    std::sort(tokenized_query.begin(), tokenized_query.end(), [](const TermNode* a, const TermNode* b)
+    { return a->info.frequence < b->info.frequence; });
+
+    return tokenized_query;
+}
+
+// Merge function that finds the intersection of two posting lists and return a vector with the results
+std::vector<int> InvertedIndex::merge(const std::vector<int>& postings0, const std::vector<int>& postings1)
+{
+    std::vector<int> merged_postings;
+    int len_postings0 = postings0.size();
+    int len_postings1 = postings1.size();
+    int cursor0 = 0, cursor1 = 0;
+
+    while (cursor0 < len_postings0 && cursor1 < len_postings1)
+    {
+        if (postings0[cursor0] == postings1[cursor1])
+        {
+            merged_postings.push_back(postings0[cursor0]);
+            ++cursor0;
+            ++cursor1;
+        }
+        else
+            (postings0[cursor0] > postings1[cursor1]) ? ++cursor1 : ++cursor0;
+    }
+    return merged_postings;
+}
