@@ -9,10 +9,10 @@ BIN_DIR = bin
 H_DIR = include
 
 # Target executable
-TARGET = ${BIN_DIR}/test-main.exe
+TARGET = ${BIN_DIR}/main.exe
 
 # Source files
-SRCS = ${SRC_DIR}/Document.cpp ${SRC_DIR}/utils.cpp ${SRC_DIR}/InvertedIndex.cpp ${SRC_DIR}/test-main.cpp
+SRCS = ${SRC_DIR}/Document.cpp ${SRC_DIR}/utils.cpp ${SRC_DIR}/InvertedIndex.cpp ${SRC_DIR}/main.cpp
 
 # Object files
 OBJS = ${SRCS:${SRC_DIR}/%.cpp=${OBJ_DIR}/%.o}
