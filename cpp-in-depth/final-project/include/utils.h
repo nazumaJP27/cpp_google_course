@@ -23,6 +23,7 @@ struct TermNode
         int frequence = 0;
         std::vector<int> positions;
 
+        // Constructor
         TermInfo(const int in_frequence=1, const int in_position=0) : frequence(in_frequence), positions({in_position}) {}
     };
 

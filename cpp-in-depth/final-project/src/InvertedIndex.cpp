@@ -15,7 +15,7 @@ InvertedIndex::InvertedIndex(const std::string &in_docs_path=DEFAULT_DOCS_PATH) 
 
     for (const Document *doc : documents_)
     {
-        add_document(*doc);
+        add_document_terms(*doc);
     }
 }
 
@@ -28,7 +28,8 @@ InvertedIndex::~InvertedIndex()
     }
 }
 
-void InvertedIndex::add_document(const Document &in_doc) const
+// Iterate over a Document object HashTable and add its terms to the instance HashTable ii_terms_ variable
+void InvertedIndex::add_document_terms(const Document &in_doc) const
 {
     const int doc_id = in_doc.get_doc_id();
     const TermNode* const *doc_terms_table = in_doc.get_terms().get_table();
@@ -48,34 +49,41 @@ void InvertedIndex::add_document(const Document &in_doc) const
 // Tokenize and merge query terms, then returns a vector with the document IDs 
 const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
 {
+    // Tokenize the query and get TermNode pointers for each term
     std::vector<const TermNode*> query_terms = tokenize_query(in_query);
     int len_query_terms = query_terms.size();
 
+    if (len_query_terms < 1)
+    {
+        // No terms found in the query
+        return {};
+    }
+
+    // If there is only one term, return its document positions directly
     if (len_query_terms == 1)
     {
         return query_terms[0]->info.positions;
     }
 
-    // Initialze a vector to hold the postings lists of each term in query_terms (starting from the second term)
-    std::vector<std::vector<int>> terms_postings;
+    // Initialize possible_doc_ids with the postings list of the first term
+    std::vector<int> possible_doc_ids = query_terms[0]->info.positions;
+
+    // Merge each subsequent term's posting list with possible_doc_ids
     for (int i = 1; i < len_query_terms; ++i)
     {
-        terms_postings.push_back(query_terms[i]->info.positions);
-    }
+        const std::vector<int> &postings = query_terms[i]->info.positions;
 
-    // Iterate over the terms_postings and update the possible_doc_ids with merge()
-    std::vector<int> possible_doc_ids = query_terms[0]->info.positions;
-    for (const std::vector<int>& postings : terms_postings)
-    {
         if (possible_doc_ids.size())
         {
             possible_doc_ids = merge(possible_doc_ids, postings);
         }
         else
         {
+            // If the merged result is empty, no further processing is needed
             break;
         }
     }
+
     return possible_doc_ids;
 }
 
@@ -105,9 +113,12 @@ std::vector<const TermNode*> InvertedIndex::tokenize_query(const std::string &in
         }
     }
 
-    // Sort TermNodes in the vector by frequence in ascendig order and return
-    std::sort(tokenized_query.begin(), tokenized_query.end(), [](const TermNode* a, const TermNode* b)
-    { return a->info.frequence < b->info.frequence; });
+    if (tokenized_query.size() > 1)
+    {
+        // Sort TermNodes in the vector by frequence in ascendig order and return
+        std::sort(tokenized_query.begin(), tokenized_query.end(), [](const TermNode* a, const TermNode* b)
+        { return a->info.frequence < b->info.frequence; });
+    }
 
     return tokenized_query;
 }
