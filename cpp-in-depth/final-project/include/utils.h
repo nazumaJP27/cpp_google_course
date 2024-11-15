@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>     // std::merge
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -14,6 +15,11 @@ const std::unordered_set<std::string> stop_words({"a", "and", "if", "in", "of", 
 // Functions
 bool is_stop_word(const std::string &in_word);
 std::string normalize(const std::string &in_word);
+
+// Merge operator functions (AND - OR - NOT)
+std::vector<int> merge_and(const std::vector<int>& postings0, const std::vector<int>& postings1);
+std::vector<int> merge_or(const std::vector<int>& postings0, const std::vector<int>& postings1);
+std::vector<int> merge_not(const std::vector<int>& postings0, const std::vector<int>& postings1);
 
 // HashTable ::
 struct TermNode

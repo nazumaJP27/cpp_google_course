@@ -31,5 +31,4 @@ public:
 private:
     void add_document_terms(const Document &in_doc) const;
     std::vector<const TermNode*> tokenize_query(const std::string &in_query);
-    std::vector<int> merge(const std::vector<int>& postings0, const std::vector<int>& postings1);
 };

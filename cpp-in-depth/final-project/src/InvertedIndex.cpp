@@ -75,7 +75,7 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
 
         if (possible_doc_ids.size())
         {
-            possible_doc_ids = merge(possible_doc_ids, postings);
+            possible_doc_ids = merge_and(possible_doc_ids, postings);
         }
         else
         {
@@ -121,26 +121,4 @@ std::vector<const TermNode*> InvertedIndex::tokenize_query(const std::string &in
     }
 
     return tokenized_query;
-}
-
-// Merge function that finds the intersection of two posting lists and return a vector with the results
-std::vector<int> InvertedIndex::merge(const std::vector<int>& postings0, const std::vector<int>& postings1)
-{
-    std::vector<int> merged_postings;
-    int len_postings0 = postings0.size();
-    int len_postings1 = postings1.size();
-    int cursor0 = 0, cursor1 = 0;
-
-    while (cursor0 < len_postings0 && cursor1 < len_postings1)
-    {
-        if (postings0[cursor0] == postings1[cursor1])
-        {
-            merged_postings.push_back(postings0[cursor0]);
-            ++cursor0;
-            ++cursor1;
-        }
-        else
-            (postings0[cursor0] > postings1[cursor1]) ? ++cursor1 : ++cursor0;
-    }
-    return merged_postings;
 }
