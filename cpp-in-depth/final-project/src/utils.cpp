@@ -43,21 +43,53 @@ std::vector<int> merge_and(const std::vector<int>& postings0, const std::vector<
 // Merge function that returns two posting lists combined into one vector
 std::vector<int> merge_or(const std::vector<int>& postings0, const std::vector<int>& postings1)
 {
+    // Combine the vectors postings0 and postings1 into a single vector using std::merge (the vector must be sorted)
     std::vector<int> merged_postings;
     std::merge(postings0.begin(), postings0.end(), postings1.begin(), postings1.end(), std::back_inserter(merged_postings));
 
     // Remove duplicates
-    int i = 1;
-    while (i < merged_postings.size())
+    int i = 1, len_merged_postings = merged_postings.size();
+    while (i < len_merged_postings)
     {
         if (merged_postings[i] == merged_postings[i - 1])
         {
             merged_postings.erase(merged_postings.begin() + i);
+            len_merged_postings = merged_postings.size();
         }
         else
         {
             ++i;
         }
+    }
+
+    return merged_postings;
+}
+
+// Remove documents with terms that should be excluded (postings0 NOT postings1)
+std::vector<int> merge_not(const std::vector<int>& postings0, const std::vector<int>& postings1)
+{
+    std::vector<int> merged_postings;
+    int len_postings0 = postings0.size();
+    int len_postings1 = postings1.size();
+    int cursor0 = 0, cursor1 = 0;
+
+    while (cursor0 < len_postings0 && cursor1 < len_postings1)
+    {
+        if (postings0[cursor0] < postings1[cursor1])
+        {
+            merged_postings.push_back(postings0[cursor0]);
+            ++cursor0;
+        }
+        else
+        {
+            (postings0[cursor0] > postings1[cursor1]) ? ++cursor1 : (++cursor0, ++cursor1);
+        }
+    }
+
+    // If there's more elements in postings0, insert them into the merged_postings vector
+    if (cursor0 < len_postings0)
+    {
+        std::copy(postings0.begin() + cursor0, postings0.end(), std::back_inserter(merged_postings));
     }
 
     return merged_postings;
