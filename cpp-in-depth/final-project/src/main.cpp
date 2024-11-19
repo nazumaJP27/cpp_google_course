@@ -1,6 +1,7 @@
 #include "../include/utils.h"
 #include "../include/Document.h"
 #include "../include/InvertedIndex.h"
+#include "../include/QueryProcessor.h"
 
 #include <iostream>
 

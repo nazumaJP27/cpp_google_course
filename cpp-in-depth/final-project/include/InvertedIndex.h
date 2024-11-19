@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Document.h"
+#include "QueryProcessor.h"
 #include "utils.h"
 
 #include <algorithm>
@@ -13,6 +14,7 @@ class InvertedIndex
     std::string docs_path_;
     std::vector<Document*> documents_;
     HashTable ii_terms_;
+    QueryProcessor processor_;
 
 public:
     // Costructor

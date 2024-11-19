@@ -75,7 +75,7 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
 
         if (possible_doc_ids.size())
         {
-            possible_doc_ids = merge_and(possible_doc_ids, postings);
+            possible_doc_ids = processor_.merge_not(possible_doc_ids, postings);
         }
         else
         {
@@ -97,8 +97,9 @@ std::vector<const TermNode*> InvertedIndex::tokenize_query(const std::string &in
 
     while (query_stream >> word)
     {
-        word = normalize(word);
-        if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
+        if (word == "AND" || word == "OR" || word == "NOT")
+        word = QueryProcessor::normalize(word);
+        if (word.length() > TERM_MAX_LENGTH || word.empty() || QueryProcessor::is_stop_word(word))
         {
             std::cout << "Term \"" << word << "\" discarted from search...\n";
             continue;

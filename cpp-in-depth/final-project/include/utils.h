@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>     // std::merge
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -8,18 +7,6 @@
 // Constants
 const unsigned int HT_DEFAULT_SIZE = 27017;
 const unsigned int TERM_MAX_LENGTH = 50;
-
-// Stop-words
-const std::unordered_set<std::string> stop_words({"a", "and", "if", "in", "of", "or", "so", "the"});
-
-// Functions
-bool is_stop_word(const std::string &in_word);
-std::string normalize(const std::string &in_word);
-
-// Merge operator functions (AND - OR - NOT)
-std::vector<int> merge_and(const std::vector<int>& postings0, const std::vector<int>& postings1);
-std::vector<int> merge_or(const std::vector<int>& postings0, const std::vector<int>& postings1);
-std::vector<int> merge_not(const std::vector<int>& postings0, const std::vector<int>& postings1);
 
 // HashTable ::
 struct TermNode

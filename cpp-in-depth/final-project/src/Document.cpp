@@ -33,7 +33,7 @@ void Document::tokenize()
     
     while (text_stream >> word)
     {
-        word = normalize(word);
+        word = QueryProcessor::normalize(word);
         terms_.insert(word, word_position);
         ++word_position;
     }

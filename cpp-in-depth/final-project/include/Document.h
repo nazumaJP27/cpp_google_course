@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QueryProcessor.h"
 #include "utils.h"
 
 #include <iostream>
