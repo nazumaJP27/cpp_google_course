@@ -6,7 +6,6 @@
 
 // Constants
 const unsigned int HT_DEFAULT_SIZE = 27017;
-const unsigned int TERM_MAX_LENGTH = 50;
 
 // HashTable ::
 struct TermNode

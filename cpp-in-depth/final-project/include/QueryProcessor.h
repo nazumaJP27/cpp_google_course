@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>     // std::merge
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <unordered_set>
@@ -8,6 +9,7 @@
 
 // Stop-words
 static const std::unordered_set<std::string> stop_words {"a", "and", "if", "in", "of", "or", "so", "the"};
+const unsigned int TERM_MAX_LENGTH = 50;
 
 class QueryProcessor
 {
