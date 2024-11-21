@@ -4,7 +4,6 @@
 #include "QueryProcessor.h"
 #include "utils.h"
 
-#include <algorithm>
 #include <filesystem>
 #include <sstream>
 #include <vector>
@@ -32,5 +31,4 @@ public:
 
 private:
     void add_document_terms(const Document &in_doc) const;
-    std::vector<const TermNode*> tokenize_query(const std::string &in_query);
 };
