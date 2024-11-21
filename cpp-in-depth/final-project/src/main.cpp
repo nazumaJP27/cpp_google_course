@@ -52,5 +52,6 @@ int main(int argc, char *argv[])
     {
         std::cout << "\nThere's no match after processing the query \"" << input_query << "\"...\n";
     }
+
     return 0;
 }

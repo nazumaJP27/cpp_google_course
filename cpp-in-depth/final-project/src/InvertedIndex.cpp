@@ -46,41 +46,72 @@ void InvertedIndex::add_document_terms(const Document &in_doc) const
     }
 }
 
-// Tokenize and merge query terms, then returns a vector with the document IDs 
+// Tokenize and merge query terms, then returns a vector with the document IDs
 const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
 {
-    // Tokenize the query and get TermNode pointers for each term
-    std::vector<const TermNode*> query_terms = tokenize_query(in_query);
-    int len_query_terms = query_terms.size();
+    // Tokenize the query and parse for operators (AND, OR, NOT) for each term
+    std::vector<QueryProcessor::QueryToken> query_tokens = processor_.parse_query(in_query);
 
-    if (len_query_terms < 1)
+    int len_query_tokens = query_tokens.size();
+
+    if (len_query_tokens < 1)
     {
         // No terms found in the query
+        std::cout << "No valid terms in the query...\n";
         return {};
     }
 
-    // If there is only one term, return its document positions directly
-    if (len_query_terms == 1)
+    // Get the TermNode* for the first term in the QueryToken vector
+    int query_index = 0;
+    const TermNode* first_term = ii_terms_.find(query_tokens[0].term);
+
+    // If the term was not in the ii_terms_, attempt to start from the next term in the query (this ignores the operator for that particular term)
+    while (!first_term)
     {
-        return query_terms[0]->info.positions;
-    }
-
-    // Initialize possible_doc_ids with the postings list of the first term
-    std::vector<int> possible_doc_ids = query_terms[0]->info.positions;
-
-    // Merge each subsequent term's posting list with possible_doc_ids
-    for (int i = 1; i < len_query_terms; ++i)
-    {
-        const std::vector<int> &postings = query_terms[i]->info.positions;
-
-        if (possible_doc_ids.size())
+        std::cout << "Term \"" << query_tokens[query_index++].term << "\" excluded from the search because was not found in the Inverted Index...\n";
+        if (query_index < len_query_tokens)
         {
-            possible_doc_ids = processor_.merge_not(possible_doc_ids, postings);
+            first_term = ii_terms_.find(query_tokens[query_index].term);
         }
         else
         {
-            // If the merged result is empty, no further processing is needed
-            break;
+            // There's no more valid terms in the query, return
+            std::cout << "No valid terms in query...\n";
+            return {};
+        }
+    }
+
+    // Initialize possible_doc_ids with the postings list of the first term
+    std::vector<int> possible_doc_ids = first_term->info.positions;
+
+    // Merge each subsequent term's posting list with possible_doc_ids and apply operators
+    while (possible_doc_ids.size() && ++query_index < len_query_tokens)
+    {
+        const QueryProcessor::QueryToken& token = query_tokens[query_index];
+        const TermNode* term_node = ii_terms_.find(token.term);
+
+        if (!term_node)
+        {
+            std::cout << "Term \"" << token.term << "\" excluded from the search because was not found in the Inverted Index...\n";
+            continue;
+        }
+
+        // Get postings for the current term
+        const std::vector<int> &postings = term_node->info.positions;
+
+        // Apply the corresponding merge operator
+        switch (token.op)
+        {
+            case QueryProcessor::OR:
+                possible_doc_ids = processor_.merge_or(possible_doc_ids, postings);
+                break;
+            case QueryProcessor::NOT:
+                possible_doc_ids = processor_.merge_not(possible_doc_ids, postings);
+                break;
+            case QueryProcessor::AND:
+            case QueryProcessor::NONE:
+                possible_doc_ids = processor_.merge_and(possible_doc_ids, postings);
+                break;
         }
     }
 

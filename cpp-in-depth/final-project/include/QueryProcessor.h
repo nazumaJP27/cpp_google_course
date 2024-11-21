@@ -13,12 +13,14 @@ const unsigned int TERM_MAX_LENGTH = 50;
 
 class QueryProcessor
 {
+    friend class InvertedIndex;
+
     // QueryToken struct
     enum QueryOperator { AND, OR, NOT, NONE };
 
     struct QueryToken
     {
-        std::string term;
+        const std::string term;
         QueryOperator op;
 
         // QueryToken constructor

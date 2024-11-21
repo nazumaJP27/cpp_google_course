@@ -67,7 +67,7 @@ void HashTable::insert(const std::string &in_word, const int &in_position) const
 }
 
 // Returns a nullpr if word not in hash table
-TermNode *HashTable::find(const std::string &in_word) const
+TermNode* HashTable::find(const std::string &in_word) const
 {
     std::string word = QueryProcessor::normalize(in_word);
     unsigned int key = hash(word);
