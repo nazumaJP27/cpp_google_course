@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils.h"
+
 #include <algorithm>     // std::merge
 #include <iostream>
 #include <string>
@@ -16,11 +18,11 @@ class QueryProcessor
     friend class InvertedIndex;
 
     // QueryToken struct
-    enum QueryOperator { AND, OR, NOT, NONE };
+    enum QueryOperator { AND, OR, NOT, NONE, PHRASE, PHRASE_END };
 
     struct QueryToken
     {
-        const std::string term;
+        std::string term;
         QueryOperator op;
 
         // QueryToken constructor

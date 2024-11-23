@@ -21,6 +21,11 @@ bool QueryProcessor::is_stop_word(const std::string &in_word)
 // Merge function that finds the intersection of two posting lists and return a vector with the results
 std::vector<int> QueryProcessor::merge_and(const std::vector<int>& postings0, const std::vector<int>& postings1)
 {
+    if (postings0.empty())
+    {
+        return {};
+    }
+
     std::vector<int> merged_postings;
     int len_postings0 = postings0.size();
     int len_postings1 = postings1.size();
@@ -40,42 +45,14 @@ std::vector<int> QueryProcessor::merge_and(const std::vector<int>& postings0, co
     return merged_postings;
 }
 
-std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::string& in_query) const
-{
-    std::vector<QueryProcessor::QueryToken> tokens;
-    std::stringstream query_stream(in_query);
-    std::string word;
-
-    QueryOperator curr_op = NONE;
-    while (query_stream >> word)
-    {
-        // Check for operators
-        if (word == "AND")
-            curr_op = AND;
-        else if (word == "OR")
-            curr_op = OR;
-        else if (word == "NOT")
-            curr_op = NOT;
-        else
-        {
-            // It's a term
-            word = normalize(word);
-            if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
-            {
-                std::cout << "Term \"" << word << "\" discarted from search...\n";
-                continue;
-            }
-            tokens.emplace_back(word, curr_op);
-            curr_op = NONE; // Reset operator
-        }
-    }
-
-    return tokens;
-}
-
 // Merge function that returns two posting lists combined into one vector
 std::vector<int> QueryProcessor::merge_or(const std::vector<int>& postings0, const std::vector<int>& postings1)
 {
+    if (postings0.empty())
+    {
+        return postings1;
+    }
+
     // Combine the vectors postings0 and postings1 into a single vector using std::merge (the vector must be sorted)
     std::vector<int> merged_postings;
     std::merge(postings0.begin(), postings0.end(), postings1.begin(), postings1.end(), std::back_inserter(merged_postings));
@@ -101,6 +78,11 @@ std::vector<int> QueryProcessor::merge_or(const std::vector<int>& postings0, con
 // Remove documents with terms that should be excluded (postings0 NOT postings1)
 std::vector<int> QueryProcessor::merge_not(const std::vector<int>& postings0, const std::vector<int>& postings1)
 {
+    if (postings0.empty())
+    {
+        return {};
+    }
+
     std::vector<int> merged_postings;
     int len_postings0 = postings0.size();
     int len_postings1 = postings1.size();
@@ -126,4 +108,39 @@ std::vector<int> QueryProcessor::merge_not(const std::vector<int>& postings0, co
     }
 
     return merged_postings;
+}
+
+std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::string& in_query) const
+{
+    std::vector<QueryProcessor::QueryToken> tokens;
+    std::stringstream query_stream(in_query);
+    std::string word;
+
+    QueryOperator curr_op = NONE;
+    while (query_stream >> word)
+    {
+        if (word[0] == '\"') // If begins with  
+        printf("%c", word[0]);
+        // Check for operators
+        if (word == "AND")
+            curr_op = AND;
+        else if (word == "OR")
+            curr_op = OR;
+        else if (word == "NOT")
+            curr_op = NOT;
+        else
+        {
+            // It's a term
+            word = normalize(word);
+            if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
+            {
+                std::cout << "Term \"" << word << "\" discarted from search...\n";
+                continue;
+            }
+            tokens.emplace_back(word, curr_op);
+            curr_op = NONE; // Reset operator
+        }
+    }
+
+    return tokens;
 }

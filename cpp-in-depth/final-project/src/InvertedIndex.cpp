@@ -49,71 +49,111 @@ void InvertedIndex::add_document_terms(const Document &in_doc) const
 // Tokenize and merge query terms, then returns a vector with the document IDs
 const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
 {
-    // Tokenize the query and parse for operators (AND, OR, NOT) for each term
+    // Tokenize the query and parse for operators (AND, OR, NOT, PHRASE, PHRASE_END) for each term
     std::vector<QueryProcessor::QueryToken> query_tokens = processor_.parse_query(in_query);
 
-    int len_query_tokens = query_tokens.size();
+    // Get postings for each term and append to an index on the new vector, processing phrases ("phrase query") and ignoring invalid terms
+    // Ignored terms are also erased from the query_tokens vector, so the indexes on both `query_tokens` and `postings` match ([token][postings])
+    std::vector<std::vector<int>> postings = get_postings(query_tokens);
 
-    if (len_query_tokens < 1)
+    int len_query_tokens = query_tokens.size(), len_postings = postings.size();
+
+    if (len_query_tokens < 1 || len_postings < 1)
     {
         // No terms found in the query
         std::cout << "No valid terms in the query...\n";
         return {};
     }
 
-    // Get the TermNode* for the first term in the QueryToken vector
-    int query_index = 0;
-    const TermNode* first_term = ii_terms_.find(query_tokens[0].term);
-
-    // If the term was not in the ii_terms_, attempt to start from the next term in the query (this ignores the operator for that particular term)
-    while (!first_term)
-    {
-        std::cout << "Term \"" << query_tokens[query_index++].term << "\" excluded from the search because was not found in the Inverted Index...\n";
-        if (query_index < len_query_tokens)
-        {
-            first_term = ii_terms_.find(query_tokens[query_index].term);
-        }
-        else
-        {
-            // There's no more valid terms in the query, return
-            std::cout << "No valid terms in query...\n";
-            return {};
-        }
-    }
-
     // Initialize possible_doc_ids with the postings list of the first term
-    std::vector<int> possible_doc_ids = first_term->info.positions;
+    std::vector<int> possible_doc_ids = postings[0];
+
+    int query_index = 0;
 
     // Merge each subsequent term's posting list with possible_doc_ids and apply operators
-    while (possible_doc_ids.size() && ++query_index < len_query_tokens)
+    while (++query_index < len_query_tokens)
     {
         const QueryProcessor::QueryToken& token = query_tokens[query_index];
-        const TermNode* term_node = ii_terms_.find(token.term);
-
-        if (!term_node)
-        {
-            std::cout << "Term \"" << token.term << "\" excluded from the search because was not found in the Inverted Index...\n";
-            continue;
-        }
-
-        // Get postings for the current term
-        const std::vector<int> &postings = term_node->info.positions;
+        const std::vector<int> &token_postings = postings[query_index];
 
         // Apply the corresponding merge operator
         switch (token.op)
         {
             case QueryProcessor::OR:
-                possible_doc_ids = processor_.merge_or(possible_doc_ids, postings);
+                possible_doc_ids = processor_.merge_or(possible_doc_ids, token_postings);
                 break;
             case QueryProcessor::NOT:
-                possible_doc_ids = processor_.merge_not(possible_doc_ids, postings);
+                possible_doc_ids = processor_.merge_not(possible_doc_ids, token_postings);
                 break;
             case QueryProcessor::AND:
             case QueryProcessor::NONE:
-                possible_doc_ids = processor_.merge_and(possible_doc_ids, postings);
+                possible_doc_ids = processor_.merge_and(possible_doc_ids, token_postings);
                 break;
         }
     }
 
     return possible_doc_ids;
+}
+
+// Takes a vector of QueryToken objs and return a vector with the posting lists for each term found in the ii_terms_
+std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProcessor::QueryToken>& in_query_tokens)
+{
+    std::vector<std::vector<int>> postings;
+
+    // Instantiate a vector to store TermNode pointers to process phrase queries (ONLY USED IN PHRASE QUERIES AND POSITIONAL INDEXES)
+    std::vector<const TermNode*> phrase_terms;
+
+    int index = 0, len_query_tokens = in_query_tokens.size();
+    QueryProcessor::QueryToken* curr_token;
+    const TermNode* term_node;
+
+    while (index < len_query_tokens)
+    {
+        curr_token = &in_query_tokens[index];
+
+        if (!(term_node = ii_terms_.find(curr_token->term)))
+        {
+            std::cout << "Term \"" << curr_token->term << "\" excluded from the search because was not found in the Inverted Index...\n";
+            in_query_tokens.erase(in_query_tokens.begin() + index);
+            continue;
+        }
+
+        if (curr_token->op == QueryProcessor::PHRASE)
+        {
+            phrase_terms.push_back(term_node);
+            // Erase the token index from the in_query_tokens vector, as the phrase will get one posting list after processing
+            in_query_tokens.erase(in_query_tokens.begin() + index);
+        }
+        else if (curr_token->op == QueryProcessor::PHRASE_END)
+        {
+            // Process phrase query and append its posting list to the postings vector as a single entry
+            phrase_terms.push_back(term_node);
+            std::vector<int> phrase_postings = process_phrase(phrase_terms);
+
+            if (phrase_postings.size())
+            {
+                postings.push_back(phrase_postings);
+                ++index;
+            }
+            else
+            {
+                std::cout << "Phrase query excluded from the search because was not found in any document of the Inverted Index...\n";
+                in_query_tokens.erase(in_query_tokens.begin() + index);
+            }
+        }
+        else
+        {
+            // Add posting list for that term
+            postings.push_back(term_node->info.positions);
+            ++index;
+        }
+    }
+
+    return postings;
+}
+
+// Function will get the positions for each term inside the documents where they are in, and then will check if there's a match for that particular phrase query
+std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*> in_phrase_terms)
+{
+    return {};
 }

@@ -31,4 +31,6 @@ public:
 
 private:
     void add_document_terms(const Document &in_doc) const;
+    std::vector<std::vector<int>> get_postings(std::vector<QueryProcessor::QueryToken>& in_query_tokens);
+    std::vector<int> process_phrase(const std::vector<const TermNode*> in_phrase_terms);
 };
