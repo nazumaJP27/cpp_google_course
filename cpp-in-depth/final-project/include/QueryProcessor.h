@@ -27,6 +27,12 @@ class QueryProcessor
 
         // QueryToken constructor
         QueryToken(const std::string& in_term, QueryOperator in_op=AND) : term(in_term), op(in_op) {}
+
+        // Constructor for invalid terms inside phrase queries only
+        // This terms will be ignored by the Inverted Index, and will only be used for matching positions in the InvertedIndex::phrase_in_document method
+        QueryToken(QueryOperator in_op) : term(), op(in_op) {}
+        
+        bool is_phrase_stop_word() { return (op == PHRASE || op == PHRASE_END) && term.empty(); }
     };
 
 public:

@@ -140,8 +140,17 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
             word = normalize(word);
             if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
             {
-                std::cout << "Term \"" << word << "\" discarted from search...\n";
-                continue;
+                if (curr_op == PHRASE || curr_op == PHRASE_END)
+                {
+                    // Token for a invalid term, used to match the positions of phrase queries
+                    tokens.emplace_back(curr_op);
+                    continue;
+                }
+                else
+                {
+                    std::cout << "Term \"" << word << "\" discarted from search...\n";
+                    continue;
+                }
             }
 
             tokens.emplace_back(word, curr_op);

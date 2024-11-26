@@ -110,7 +110,16 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
     {
         curr_token = &in_query_tokens[index];
 
-        if (!(term_node = ii_terms_.find(curr_token->term)))
+        if (curr_token->is_phrase_stop_word())
+        {
+            // Append a pointer to NULL representing a term to be ignored and only used for matching positions in phrase processing
+            phrase_terms.push_back(nullptr);
+            // Erase the token index from the in_query_tokens vector, as the phrase will get one posting list after processing
+            in_query_tokens.erase(in_query_tokens.begin() + index);
+            continue;
+        }
+
+        if (!(term_node = ii_terms_.find(curr_token->term)) )
         {
             std::cout << "Term \"" << curr_token->term << "\" excluded from the search because was not found in the Inverted Index...\n";
             in_query_tokens.erase(in_query_tokens.begin() + index);
@@ -160,7 +169,9 @@ std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*
     // Perform merge AND to find documents containing all terms
     for (int i = 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
     {
-        possible_doc_ids = processor_.merge_and(possible_doc_ids, in_phrase_terms[0]->info.positions);
+        if (!in_phrase_terms[i]) continue; // Ignore invalid term
+
+        possible_doc_ids = processor_.merge_and(possible_doc_ids, in_phrase_terms[i]->info.positions);
     }
 
     // To store documents where the phrase is found
@@ -192,6 +203,9 @@ bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermN
         // Check subsequent terms using two pointers
         for (size_t i = 1; i < in_phrase_terms.size(); ++i)
         {
+            // Jump position of invalid terms in phrase queries (like stop-words)
+            if (!in_phrase_terms[i]) continue;
+
             const std::vector<int>& next_term_positions = positions_in_document(in_phrase_terms[i], doc_id);
 
             // Use lower_bound to find the smallest position >= expected position
