@@ -115,12 +115,13 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
     std::vector<QueryProcessor::QueryToken> tokens;
     std::stringstream query_stream(in_query);
     std::string word;
+    QueryOperator curr_op;
 
-    QueryOperator curr_op = NONE;
     while (query_stream >> word)
     {
-        if (word[0] == '\"') // If begins with  
-        printf("%c", word[0]);
+        if (curr_op != PHRASE)
+            curr_op = AND; // Reset operator
+
         // Check for operators
         if (word == "AND")
             curr_op = AND;
@@ -130,15 +131,20 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
             curr_op = NOT;
         else
         {
-            // It's a term
+            // It's a term || phrase query
+            if (word[0] == '\"')
+                curr_op = PHRASE;
+            else if (word.back() == '\"')
+                curr_op = PHRASE_END;
+
             word = normalize(word);
             if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
             {
                 std::cout << "Term \"" << word << "\" discarted from search...\n";
                 continue;
             }
+
             tokens.emplace_back(word, curr_op);
-            curr_op = NONE; // Reset operator
         }
     }
 

@@ -36,7 +36,7 @@ void InvertedIndex::add_document_terms(const Document &in_doc) const
     const unsigned int doc_table_size = in_doc.get_terms().get_size();
 
     const TermNode *cursor = doc_terms_table[0];
-    for (unsigned int i = 0; i < doc_table_size - 1; ++i, cursor = doc_terms_table[i])
+    for (unsigned int i = 0; i < doc_table_size - 1; cursor = doc_terms_table[++i])
     {
         while (cursor)
         {
@@ -52,7 +52,7 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
     // Tokenize the query and parse for operators (AND, OR, NOT, PHRASE, PHRASE_END) for each term
     std::vector<QueryProcessor::QueryToken> query_tokens = processor_.parse_query(in_query);
 
-    // Get postings for each term and append to an index on the new vector, processing phrases ("phrase query") and ignoring invalid terms
+    // Get postings for each term in the query and append to an index on the new vector, processing phrases ("phrase query") and ignoring invalid terms
     // Ignored terms are also erased from the query_tokens vector, so the indexes on both `query_tokens` and `postings` match ([token][postings])
     std::vector<std::vector<int>> postings = get_postings(query_tokens);
 
@@ -86,7 +86,6 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
                 possible_doc_ids = processor_.merge_not(possible_doc_ids, token_postings);
                 break;
             case QueryProcessor::AND:
-            case QueryProcessor::NONE:
                 possible_doc_ids = processor_.merge_and(possible_doc_ids, token_postings);
                 break;
         }
@@ -107,7 +106,7 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
     QueryProcessor::QueryToken* curr_token;
     const TermNode* term_node;
 
-    while (index < len_query_tokens)
+    while (index < in_query_tokens.size())
     {
         curr_token = &in_query_tokens[index];
 
@@ -155,5 +154,72 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
 // Function will get the positions for each term inside the documents where they are in, and then will check if there's a match for that particular phrase query
 std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*> in_phrase_terms)
 {
-    return {};
+    // Initialize possible_doc_ids with the postings list of the first term
+    std::vector<int> possible_doc_ids = in_phrase_terms[0]->info.positions;
+
+    // Perform merge AND to find documents containing all terms
+    for (int i = 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
+    {
+        possible_doc_ids = processor_.merge_and(possible_doc_ids, in_phrase_terms[0]->info.positions);
+    }
+
+    // To store documents where the phrase is found
+    std::vector<int> matching_doc_ids;
+
+    // Check each candidate document for the phrase
+    for (int doc_id : possible_doc_ids)
+    {
+        // Check if the phrase appears in the document
+        if (phrase_in_document(doc_id, in_phrase_terms))
+        {
+            matching_doc_ids.push_back(doc_id);
+        }
+    }
+
+    return matching_doc_ids;
+}
+
+bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermNode*>& in_phrase_terms)
+{
+    // Get the positions of the first term
+    const std::vector<int>& first_term_positions = positions_in_document(in_phrase_terms[0], doc_id);
+
+    // Iterate over each starting position of the first term
+    for (int start_pos : first_term_positions)
+    {
+        bool match = true;
+
+        // Check subsequent terms using two pointers
+        for (size_t i = 1; i < in_phrase_terms.size(); ++i)
+        {
+            const std::vector<int>& next_term_positions = positions_in_document(in_phrase_terms[i], doc_id);
+
+            // Use lower_bound to find the smallest position >= expected position
+            int expected_pos = start_pos + static_cast<int>(i);
+            auto it = std::lower_bound(next_term_positions.begin(), next_term_positions.end(), expected_pos);
+
+            // If no position matches, or the closest position is not the expected one, break
+            if (it == next_term_positions.end() || *it != expected_pos)
+            {
+                match = false;
+                break;
+            }
+        }
+
+        if (match)
+            return true; // Phrase found
+    }
+
+    return false; // Phrase not found
+}
+
+
+const std::vector<int>& InvertedIndex::positions_in_document(const TermNode* in_term, int in_doc_id)
+{
+    const TermNode *doc_term_node = documents_[in_doc_id]->get_terms().find(in_term->word);
+
+    if (!doc_term_node)
+        return {};
+
+    return doc_term_node->info.positions;
 }

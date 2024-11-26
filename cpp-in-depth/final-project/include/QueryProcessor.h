@@ -18,7 +18,7 @@ class QueryProcessor
     friend class InvertedIndex;
 
     // QueryToken struct
-    enum QueryOperator { AND, OR, NOT, NONE, PHRASE, PHRASE_END };
+    enum QueryOperator { AND, OR, NOT, PHRASE, PHRASE_END };
 
     struct QueryToken
     {
@@ -26,7 +26,7 @@ class QueryProcessor
         QueryOperator op;
 
         // QueryToken constructor
-        QueryToken(const std::string& in_term, QueryOperator in_op=NONE) : term(in_term), op(in_op) {}
+        QueryToken(const std::string& in_term, QueryOperator in_op=AND) : term(in_term), op(in_op) {}
     };
 
 public:
