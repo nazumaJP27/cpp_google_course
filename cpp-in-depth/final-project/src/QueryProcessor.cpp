@@ -115,7 +115,7 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
     std::vector<QueryProcessor::QueryToken> tokens;
     std::stringstream query_stream(in_query);
     std::string word;
-    QueryOperator curr_op;
+    QueryOperator curr_op = AND;
 
     while (query_stream >> word)
     {

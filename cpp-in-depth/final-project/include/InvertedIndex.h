@@ -29,7 +29,7 @@ public:
     const std::string& get_docs_path() const { return docs_path_; }
     const std::vector<Document*>& get_documents() const { return documents_; }
 
-    const std::vector<int>& positions_in_document(const TermNode* in_term, int in_doc_id);
+    const std::vector<int>* positions_in_document(const TermNode* in_term, int in_doc_id);
 
 private:
     void add_document_terms(const Document &in_doc) const;

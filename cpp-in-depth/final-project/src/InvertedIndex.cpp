@@ -88,6 +88,10 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
             case QueryProcessor::AND:
                 possible_doc_ids = processor_.merge_and(possible_doc_ids, token_postings);
                 break;
+            case QueryProcessor::PHRASE:
+            case QueryProcessor::PHRASE_END:
+                std::cout << "Unexpected PHRASE operators after getting posting lists for terms...\n";
+                return {};
         }
     }
 
@@ -102,7 +106,7 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
     // Instantiate a vector to store TermNode pointers to process phrase queries (ONLY USED IN PHRASE QUERIES AND POSITIONAL INDEXES)
     std::vector<const TermNode*> phrase_terms;
 
-    int index = 0, len_query_tokens = in_query_tokens.size();
+    size_t index = 0;
     QueryProcessor::QueryToken* curr_token;
     const TermNode* term_node;
 
@@ -167,7 +171,7 @@ std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*
     std::vector<int> possible_doc_ids = in_phrase_terms[0]->info.positions;
 
     // Perform merge AND to find documents containing all terms
-    for (int i = 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
+    for (size_t i = 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
     {
         if (!in_phrase_terms[i]) continue; // Ignore invalid term
 
@@ -193,10 +197,10 @@ std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*
 bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermNode*>& in_phrase_terms)
 {
     // Get the positions of the first term
-    const std::vector<int>& first_term_positions = positions_in_document(in_phrase_terms[0], doc_id);
+    const std::vector<int>* first_term_positions = positions_in_document(in_phrase_terms[0], doc_id);
 
     // Iterate over each starting position of the first term
-    for (int start_pos : first_term_positions)
+    for (int start_pos : *first_term_positions)
     {
         bool match = true;
 
@@ -206,14 +210,14 @@ bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermN
             // Jump position of invalid terms in phrase queries (like stop-words)
             if (!in_phrase_terms[i]) continue;
 
-            const std::vector<int>& next_term_positions = positions_in_document(in_phrase_terms[i], doc_id);
+            const std::vector<int>* next_term_positions = positions_in_document(in_phrase_terms[i], doc_id);
 
             // Use lower_bound to find the smallest position >= expected position
             int expected_pos = start_pos + static_cast<int>(i);
-            auto it = std::lower_bound(next_term_positions.begin(), next_term_positions.end(), expected_pos);
+            auto it = std::lower_bound(next_term_positions->begin(), next_term_positions->end(), expected_pos);
 
             // If no position matches, or the closest position is not the expected one, break
-            if (it == next_term_positions.end() || *it != expected_pos)
+            if (it == next_term_positions->end() || *it != expected_pos)
             {
                 match = false;
                 break;
@@ -228,12 +232,9 @@ bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermN
 }
 
 
-const std::vector<int>& InvertedIndex::positions_in_document(const TermNode* in_term, int in_doc_id)
+const std::vector<int>* InvertedIndex::positions_in_document(const TermNode* in_term, int in_doc_id)
 {
     const TermNode *doc_term_node = documents_[in_doc_id]->get_terms().find(in_term->word);
 
-    if (!doc_term_node)
-        return {};
-
-    return doc_term_node->info.positions;
+    return doc_term_node ? &doc_term_node->info.positions : nullptr;
 }
