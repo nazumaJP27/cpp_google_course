@@ -1,5 +1,6 @@
 #include "../include/utils.h"
 #include "../include/QueryProcessor.h" // QueryProcessor::is_stop_word
+#include "../include/UI.h"
 
 // HashTable ::
 // Constructor 
@@ -86,4 +87,13 @@ TermNode* HashTable::find(const std::string &in_word) const
         }
     }
     return cursor;
+}
+
+void get_query(std::string& input_query_buffer)
+{
+    std::string buffer = "Enter a query to search the Inverted Index";
+    UI::display_menu(buffer);
+    std::cout << "Search query: ";
+
+    std::getline(std::cin, input_query_buffer);
 }

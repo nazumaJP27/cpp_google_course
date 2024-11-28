@@ -119,9 +119,6 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
 
     while (query_stream >> word)
     {
-        if (curr_op != PHRASE)
-            curr_op = AND; // Reset operator
-
         // Check for operators
         if (word == "AND")
             curr_op = AND;
@@ -154,6 +151,9 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
             }
 
             tokens.emplace_back(word, curr_op);
+
+            if (curr_op != PHRASE)
+                curr_op = AND; // Reset operator
         }
     }
 

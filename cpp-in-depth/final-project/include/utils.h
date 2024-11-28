@@ -43,3 +43,5 @@ struct HashTable
     const TermNode* const *get_table() const { return table_; }
     const unsigned int get_size() const { return size_; }
 };
+
+void get_query(std::string& input_query_buffer);

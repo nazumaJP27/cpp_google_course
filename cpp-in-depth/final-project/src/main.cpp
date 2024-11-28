@@ -2,6 +2,7 @@
 #include "../include/Document.h"
 #include "../include/InvertedIndex.h"
 #include "../include/QueryProcessor.h"
+#include "../include/UI.h"
 
 #include <iostream>
 
@@ -23,34 +24,24 @@ int main(int argc, char *argv[])
     std::vector<Document*> documents = ii.get_documents();
 
     // Display the path for the files used to instantiate each Document object
-    std::cout << "Paths for the " << documents.size() << " documents in the Inverted Index:\n";
-    for (Document *doc_ptr : documents)
-    {
-        std::cout << doc_ptr->get_path() << std::endl;
-    }
+    UI::display_path_of_documents(documents);
 
     // Get a query from the user, process it, and display the location data
-    std::cout << "\nEnter a query to search the Inverted Index: ";
-
     std::string input_query;
-    std::getline(std::cin, input_query);
+    get_query(input_query);
 
     std::vector<int> doc_ids_for_query = ii.process_query(input_query);
     int num_docs = doc_ids_for_query.size();
 
+
     if (num_docs > 0)
     {
-        std::cout << "\nReturned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n";
-        const Document *curr_document = nullptr;
-        for (int doc_id : doc_ids_for_query)
-        {
-            curr_document = documents[doc_id];
-            std::cout << "DocID: " << curr_document->get_doc_id() << " - Path: " << curr_document->get_path() << std::endl;
-        }
+        std::cout << "Returned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n\n";
+        UI::display_location_data(documents, doc_ids_for_query);
     }
     else
     {
-        std::cout << "\nThere's no match after processing the query \"" << input_query << "\"...\n";
+        std::cout << "There's no match after processing the query \"" << input_query << "\"...\n";
     }
 
     return 0;
