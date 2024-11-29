@@ -116,6 +116,7 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
     std::stringstream query_stream(in_query);
     std::string word;
     QueryOperator curr_op = AND;
+    TokenType curr_type = NORMAL;
 
     while (query_stream >> word)
     {
@@ -130,17 +131,17 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
         {
             // It's a term || phrase query
             if (word[0] == '\"')
-                curr_op = PHRASE;
+                curr_type = PHRASE;
             else if (word.back() == '\"')
-                curr_op = PHRASE_END;
+                curr_type = PHRASE_END;
 
             word = normalize(word);
             if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
             {
-                if (curr_op == PHRASE || curr_op == PHRASE_END)
+                if (curr_type == PHRASE || curr_type == PHRASE_END)
                 {
                     // Token for a invalid term, used to match the positions of phrase queries
-                    tokens.emplace_back(curr_op);
+                    tokens.emplace_back(curr_op, curr_type);
                     continue;
                 }
                 else
@@ -150,10 +151,13 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
                 }
             }
 
-            tokens.emplace_back(word, curr_op);
+            tokens.emplace_back(word, curr_op, curr_type);
 
-            if (curr_op != PHRASE)
+            if (curr_type != PHRASE)
+            {
                 curr_op = AND; // Reset operator
+                curr_type = NORMAL; // Reset type
+            }
         }
     }
 

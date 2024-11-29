@@ -93,7 +93,7 @@ void get_query(std::string& input_query_buffer)
 {
     std::string buffer = "Enter a query to search the Inverted Index";
     UI::display_menu(buffer);
-    std::cout << "Search query: ";
+    std::cout << "-> Search query: ";
 
     std::getline(std::cin, input_query_buffer);
 }

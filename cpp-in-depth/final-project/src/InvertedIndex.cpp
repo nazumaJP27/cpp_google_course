@@ -88,10 +88,6 @@ const std::vector<int> InvertedIndex::process_query(const std::string &in_query)
             case QueryProcessor::AND:
                 possible_doc_ids = processor_.merge_and(possible_doc_ids, token_postings);
                 break;
-            case QueryProcessor::PHRASE:
-            case QueryProcessor::PHRASE_END:
-                std::cout << "Unexpected PHRASE operators after getting posting lists for terms...\n";
-                return {};
         }
     }
 
@@ -130,13 +126,13 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
             continue;
         }
 
-        if (curr_token->op == QueryProcessor::PHRASE)
+        if (curr_token->type == QueryProcessor::PHRASE)
         {
             phrase_terms.push_back(term_node);
             // Erase the token index from the in_query_tokens vector, as the phrase will get one posting list after processing
             in_query_tokens.erase(in_query_tokens.begin() + index);
         }
-        else if (curr_token->op == QueryProcessor::PHRASE_END)
+        else if (curr_token->type == QueryProcessor::PHRASE_END)
         {
             // Process phrase query and append its posting list to the postings vector as a single entry
             phrase_terms.push_back(term_node);

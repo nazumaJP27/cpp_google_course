@@ -18,21 +18,24 @@ class QueryProcessor
     friend class InvertedIndex;
 
     // QueryToken struct
-    enum QueryOperator { AND, OR, NOT, PHRASE, PHRASE_END };
+
+    enum QueryOperator { AND, OR, NOT };
+    enum TokenType { NORMAL, PHRASE, PHRASE_END };
 
     struct QueryToken
     {
         std::string term;
         QueryOperator op;
+        TokenType type;
 
         // QueryToken constructor
-        QueryToken(const std::string& in_term, QueryOperator in_op=AND) : term(in_term), op(in_op) {}
+        QueryToken(const std::string& in_term, QueryOperator in_op, TokenType in_type) : term(in_term), op(in_op), type(in_type) {}
 
         // Constructor for invalid terms inside phrase queries only
-        // This terms will be ignored by the Inverted Index, and will only be used for matching positions in the InvertedIndex::phrase_in_document method
-        QueryToken(QueryOperator in_op) : term(), op(in_op) {}
+        // This terms will be ignored by the Inverted Index, and will only be used to match positions in the InvertedIndex::phrase_in_document method
+        QueryToken(QueryOperator in_op, TokenType in_type=PHRASE) : term(), op(in_op), type(in_type) {}
         
-        bool is_phrase_stop_word() { return (op == PHRASE || op == PHRASE_END) && term.empty(); }
+        bool is_phrase_stop_word() { return (type == PHRASE || type == PHRASE_END) && term.empty(); }
     };
 
 public:

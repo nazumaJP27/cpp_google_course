@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     if (num_docs > 0)
     {
-        std::cout << "Returned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n\n";
+        std::cout << "\nReturned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n\n";
         UI::display_location_data(documents, doc_ids_for_query);
     }
     else
