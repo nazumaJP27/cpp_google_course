@@ -40,8 +40,10 @@ class QueryProcessor
 
 public:
     // Methods
-    static bool is_stop_word(const std::string &in_word);
-    static std::string normalize(const std::string &in_word);
+    static bool is_stop_word(const std::string& in_word);
+    static std::string normalize(const std::string& in_word);
+    static std::string stem(const std::string& in_word);
+    static bool suffix(const std::string& in_word, const std::string& in_suffix);
 
     std::vector<QueryToken> parse_query(const std::string& in_query) const;
 

@@ -1,6 +1,6 @@
 #include "../include/QueryProcessor.h"
 
-std::string QueryProcessor::normalize(const std::string &in_word)
+std::string QueryProcessor::normalize(const std::string& in_word)
 {
     std::string out_word;
     for (char c : in_word)
@@ -13,7 +13,43 @@ std::string QueryProcessor::normalize(const std::string &in_word)
     return out_word;
 }
 
-bool QueryProcessor::is_stop_word(const std::string &in_word)
+// Simple implementation of a stemming function (first implementation - work in progress)
+std::string QueryProcessor::stem(const std::string& in_word)
+{
+    std::string stemmed_word = in_word;
+
+    // Remove commom suffixes from words with more than 4 chars
+    if (stemmed_word.size() > 4)
+    {
+        if (suffix(stemmed_word, "ing"))
+            stemmed_word.erase(stemmed_word.end() - 3, stemmed_word.end());
+        else if (suffix(stemmed_word, "ed"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+        else if (suffix(stemmed_word, "es"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+        else if (suffix(stemmed_word, "s"))
+            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
+        else if (suffix(stemmed_word, "d"))
+            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
+        else if (suffix(stemmed_word, "ly"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+    }
+
+    // Remove double consonant
+    if (stemmed_word.size() > 2 && stemmed_word[stemmed_word.size() - 2] == stemmed_word[stemmed_word.size() - 1])
+    {
+        stemmed_word.erase(stemmed_word.end() - 1);
+    }
+
+    return stemmed_word;
+}
+
+bool QueryProcessor::suffix(const std::string& in_word, const std::string& in_suffix)
+{
+    return (in_word.size() >= in_suffix.size()) && in_word.substr(in_word.size() - in_suffix.size()) == in_suffix;
+}
+
+bool QueryProcessor::is_stop_word(const std::string& in_word)
 {
     return stop_words.find(in_word) != stop_words.end();
 }
@@ -136,6 +172,7 @@ std::vector<QueryProcessor::QueryToken> QueryProcessor::parse_query(const std::s
                 curr_type = PHRASE_END;
 
             word = normalize(word);
+            word = stem(word);
             if (word.length() > TERM_MAX_LENGTH || word.empty() || is_stop_word(word))
             {
                 if (curr_type == PHRASE || curr_type == PHRASE_END)

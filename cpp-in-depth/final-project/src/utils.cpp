@@ -71,6 +71,7 @@ void HashTable::insert(const std::string &in_word, const int &in_position) const
 TermNode* HashTable::find(const std::string &in_word) const
 {
     std::string word = QueryProcessor::normalize(in_word);
+    word = QueryProcessor::stem(word);
     unsigned int key = hash(word);
     TermNode *cursor = table_[key];
 
