@@ -1,5 +1,4 @@
 #include "../include/utils.h"
-#include "../include/QueryProcessor.h" // QueryProcessor::is_stop_word
 #include "../include/UI.h"
 
 // HashTable ::
@@ -37,7 +36,7 @@ const unsigned int HashTable::hash(const std::string &key) const
 
 void HashTable::insert(const std::string &in_word, const int &in_position) const
 {
-    if (in_word.length() > TERM_MAX_LENGTH || in_word.empty() || QueryProcessor::is_stop_word(in_word))
+    if (in_word.length() > TERM_MAX_LENGTH || in_word.empty() || is_stop_word(in_word))
     {
         return;
     }
@@ -70,8 +69,8 @@ void HashTable::insert(const std::string &in_word, const int &in_position) const
 // Returns a nullpr if word not in hash table
 TermNode* HashTable::find(const std::string &in_word) const
 {
-    std::string word = QueryProcessor::normalize(in_word);
-    word = QueryProcessor::stem(word);
+    std::string word = normalize(in_word);
+    word = stem(word);
     unsigned int key = hash(word);
     TermNode *cursor = table_[key];
 
@@ -97,4 +96,58 @@ void get_query(std::string& input_query_buffer)
     std::cout << "-> Search query: ";
 
     std::getline(std::cin, input_query_buffer);
+}
+
+bool is_stop_word(const std::string& in_word)
+{
+    return stop_words.find(in_word) != stop_words.end();
+}
+
+std::string normalize(const std::string& in_word)
+{
+    std::string out_word;
+    for (char c : in_word)
+    {
+        if (std::isalpha(c))
+        {
+            out_word.push_back(std::tolower(c));
+        }
+    }
+    return out_word;
+}
+
+// Simple implementation of a stemming function (first implementation - work in progress)
+std::string stem(const std::string& in_word)
+{
+    std::string stemmed_word = in_word;
+
+    // Remove commom suffixes from words with more than 4 chars
+    if (stemmed_word.size() > 4)
+    {
+        if (suffix(stemmed_word, "ing"))
+            stemmed_word.erase(stemmed_word.end() - 3, stemmed_word.end());
+        else if (suffix(stemmed_word, "ed"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+        else if (suffix(stemmed_word, "es"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+        else if (suffix(stemmed_word, "s"))
+            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
+        else if (suffix(stemmed_word, "d"))
+            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
+        else if (suffix(stemmed_word, "ly"))
+            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+    }
+
+    // Remove double consonant
+    if (stemmed_word.size() > 2 && stemmed_word[stemmed_word.size() - 2] == stemmed_word[stemmed_word.size() - 1])
+    {
+        stemmed_word.erase(stemmed_word.end() - 1);
+    }
+
+    return stemmed_word;
+}
+
+bool suffix(const std::string& in_word, const std::string& in_suffix)
+{
+    return (in_word.size() >= in_suffix.size()) && in_word.substr(in_word.size() - in_suffix.size()) == in_suffix;
 }

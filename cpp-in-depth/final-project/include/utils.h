@@ -6,6 +6,9 @@
 
 // Constants
 const unsigned int HT_DEFAULT_SIZE = 27017;
+// for stop-words and invalid terms
+static const std::unordered_set<std::string> stop_words {"a", "and", "if", "in", "of", "or", "so", "the"};
+const unsigned int TERM_MAX_LENGTH = 50;
 
 // HashTable ::
 struct TermNode
@@ -45,3 +48,8 @@ struct HashTable
 };
 
 void get_query(std::string& input_query_buffer);
+
+bool is_stop_word(const std::string& in_word);
+std::string normalize(const std::string& in_word);
+std::string stem(const std::string& in_word);
+bool suffix(const std::string& in_word, const std::string& in_suffix);

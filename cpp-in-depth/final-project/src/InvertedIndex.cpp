@@ -3,7 +3,7 @@
 // Constructor
 InvertedIndex::InvertedIndex(const std::string &in_docs_path=DEFAULT_DOCS_PATH) : docs_path_(in_docs_path)
 {
-    // Iterate over the files in the doc_path and create Document objects
+    // Iterate over the files in the docs_path and create Document objects
     for (const auto &file : std::filesystem::directory_iterator(docs_path_))
     {
         if (file.is_regular_file() && file.path().extension() == ".txt")
