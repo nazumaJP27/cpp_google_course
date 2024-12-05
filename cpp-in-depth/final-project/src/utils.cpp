@@ -116,7 +116,7 @@ std::string normalize(const std::string& in_word)
     return out_word;
 }
 
-// Simple implementation of a stemming function (first implementation - work in progress)
+// Simple implementation of a stemming function
 std::string stem(const std::string& in_word)
 {
     std::string stemmed_word = in_word;
@@ -124,18 +124,14 @@ std::string stem(const std::string& in_word)
     // Remove commom suffixes from words with more than 4 chars
     if (stemmed_word.size() > 4)
     {
-        if (suffix(stemmed_word, "ing"))
-            stemmed_word.erase(stemmed_word.end() - 3, stemmed_word.end());
-        else if (suffix(stemmed_word, "ed"))
-            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
-        else if (suffix(stemmed_word, "es"))
-            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
-        else if (suffix(stemmed_word, "s"))
-            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
-        else if (suffix(stemmed_word, "d"))
-            stemmed_word.erase(stemmed_word.end() - 1, stemmed_word.end());
-        else if (suffix(stemmed_word, "ly"))
-            stemmed_word.erase(stemmed_word.end() - 2, stemmed_word.end());
+        for (const std::string& suffix : suffixes)
+        {
+            if (is_suffix(stemmed_word, suffix))
+            {
+                remove_suffix(stemmed_word, suffix);
+                break;
+            }
+        }
     }
 
     // Remove double consonant
@@ -147,7 +143,13 @@ std::string stem(const std::string& in_word)
     return stemmed_word;
 }
 
-bool suffix(const std::string& in_word, const std::string& in_suffix)
+bool is_suffix(const std::string& in_word, const std::string& in_suffix)
 {
     return (in_word.size() >= in_suffix.size()) && in_word.substr(in_word.size() - in_suffix.size()) == in_suffix;
+}
+
+void remove_suffix(std::string& in_word, const std::string& in_suffix)
+{
+    if ((in_word.size() - in_suffix.size()) > 3 && is_suffix(in_word, in_suffix) )
+        in_word.erase(in_word.size() - in_suffix.size());
 }
