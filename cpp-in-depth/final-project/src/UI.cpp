@@ -55,3 +55,23 @@ void UI::display_location_data(const std::vector<Document*> in_documents, const 
 
     UI::end_menu();
 }
+
+void UI::display_sequence_in_document(const Document* in_doc, int position_begin, int position_end)
+{
+    std::stringstream text_stream(in_doc->get_text());
+    std::string word;
+
+    // Skip words before position_begin
+    for (int i = 0; i < position_begin; ++i)
+    {
+        text_stream >> word;
+    }
+
+    std::cout << UI::subcontent_sep_line() << "\n\"... ";
+    for (int i = position_begin; i < position_end; ++i)
+    {
+        text_stream >> word;
+        std::cout << word << ' ';
+    }
+    std::cout << "...\"\n" << UI::subcontent_sep_line();
+}
