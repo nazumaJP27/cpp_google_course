@@ -31,4 +31,4 @@ This repository contains the **Learn by Example's**, **Exercises**, and **Projec
     - **Unit Tests:** http://www.cs.nmsu.edu/~jeffery/courses/371/cppunit/cppunit_cookbook.html
     - **Project:** *Inverted Index*
 
-##### *Aug 2024 - Present*
+##### *Aug 2024 - Dec 2024*
