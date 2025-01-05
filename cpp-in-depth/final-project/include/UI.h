@@ -24,5 +24,5 @@ public:
 
     static void display_path_of_documents(const std::vector<Document*>& in_documents);
     static void display_location_data(const std::vector<Document*> in_documents, const std::vector<int>& in_doc_ids);
-    static void display_sequence_in_document(const Document* in_doc, int postion_begin, int position_end);
+    static void display_sequence_in_document(const Document* in_doc, int postion_begin, int position_end, int context_words=7);
 };

@@ -163,11 +163,13 @@ std::vector<std::vector<int>> InvertedIndex::get_postings(std::vector<QueryProce
 // Function will get the positions for each term inside the documents where they are in, and then will check if there's a match for that particular phrase query
 std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*> in_phrase_terms)
 {
-    // Initialize possible_doc_ids with the postings list of the first term
-    std::vector<int> possible_doc_ids = in_phrase_terms[0]->info.positions;
+    // Initialize possible_doc_ids with the postings list of the first valid term
+    size_t i = 0;
+    while (!in_phrase_terms[i]) ++i;
+    std::vector<int> possible_doc_ids = in_phrase_terms[i]->info.positions;
 
     // Perform merge AND to find documents containing all terms
-    for (size_t i = 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
+    for (i = i + 1; i < in_phrase_terms.size() && !possible_doc_ids.empty(); ++i)
     {
         if (!in_phrase_terms[i]) continue; // Ignore invalid term
 
@@ -192,8 +194,10 @@ std::vector<int> InvertedIndex::process_phrase(const std::vector<const TermNode*
 
 bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermNode*>& in_phrase_terms)
 {
-    // Get the positions of the first term
-    const std::vector<int>* first_term_positions = positions_in_document(in_phrase_terms[0], doc_id);
+    // Get the positions of the first valid term
+    int valid_index = 0;
+    while (!in_phrase_terms[valid_index]) ++valid_index;
+    const std::vector<int>* first_term_positions = positions_in_document(in_phrase_terms[valid_index], doc_id);
 
     // Iterate over each starting position of the first term
     for (int start_pos : *first_term_positions)
@@ -201,7 +205,7 @@ bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermN
         bool match = true;
 
         // Check subsequent terms using two pointers
-        for (size_t i = 1; i < in_phrase_terms.size(); ++i)
+        for (size_t i = valid_index + 1; i < in_phrase_terms.size(); ++i)
         {
             // Jump position of invalid terms in phrase queries (like stop-words)
             if (!in_phrase_terms[i]) continue;
@@ -221,10 +225,15 @@ bool InvertedIndex::phrase_in_document(int doc_id, const std::vector<const TermN
         }
 
         if (match)
-            return true; // Phrase found
+        {
+            // Phrase found. Return the start_pos to then highlight the matching result for the query
+            UI::display_sequence_in_document(documents_[doc_id], start_pos, start_pos + in_phrase_terms.size());
+            return true;
+        }
     }
 
-    return false; // Phrase not found
+    // Phrase not found
+    return false;
 }
 
 

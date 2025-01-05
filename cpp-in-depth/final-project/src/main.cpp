@@ -29,14 +29,12 @@ int main(int argc, char *argv[])
     // Get a query from the user, process it, and display the location data
     std::string input_query;
     get_query(input_query);
-
     std::vector<int> doc_ids_for_query = ii.process_query(input_query);
     int num_docs = doc_ids_for_query.size();
 
-
     if (num_docs > 0)
     {
-        std::cout << "\nReturned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n\n";
+        std::cout << "\n\nReturned " << num_docs << " out of " << documents.size() << " total documents after processing the query \"" << input_query << "\":\n\n";
         UI::display_location_data(documents, doc_ids_for_query);
     }
     else

@@ -56,22 +56,28 @@ void UI::display_location_data(const std::vector<Document*> in_documents, const 
     UI::end_menu();
 }
 
-void UI::display_sequence_in_document(const Document* in_doc, int position_begin, int position_end)
+void UI::display_sequence_in_document(const Document* in_doc, int position_begin, int position_end, int context_words)
 {
     std::stringstream text_stream(in_doc->get_text());
     std::string word;
+    std::vector<std::string> words;
 
-    // Skip words before position_begin
-    for (int i = 0; i < position_begin; ++i)
+    // Extract all words into a vector for easier manipulation
+    while (text_stream >> word)
     {
-        text_stream >> word;
+        words.push_back(word);
     }
 
+    int total_words = words.size();
+    position_begin = std::max(0, position_begin - context_words); // Add context before the match
+    position_end = std::min(total_words, position_end + context_words); // Add context after the match
+
+    std::cout << '\n' << UI::submenu_sep_line() << "\nPhrase query matched in \"" << in_doc->get_path() << "\" - DocID: " << in_doc->get_doc_id() << " - Positions: " << position_begin << " to " << position_end <<  "\n";
     std::cout << UI::subcontent_sep_line() << "\n\"... ";
+
     for (int i = position_begin; i < position_end; ++i)
     {
-        text_stream >> word;
-        std::cout << word << ' ';
+        std::cout << words[i] << ' ';
     }
-    std::cout << "...\"\n" << UI::subcontent_sep_line();
+    std::cout << "...\"\n" << UI::subcontent_sep_line() << "\n" << UI::submenu_sep_line();
 }

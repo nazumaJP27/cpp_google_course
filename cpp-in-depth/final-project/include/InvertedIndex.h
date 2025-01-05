@@ -3,6 +3,7 @@
 #include "Document.h"
 #include "QueryProcessor.h"
 #include "utils.h"
+#include "UI.h"
 
 #include <filesystem>
 #include <sstream>
